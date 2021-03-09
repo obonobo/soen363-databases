@@ -8,6 +8,21 @@ num_rating INTEGER,
 PRIMARY KEY(mid));
 --DONT FORGET TO_DATE FOR YEAR
 
+ALTER TABLE movies ALTER COLUMN year TYPE INTEGER USING year::integer;
+
+UPDATE movies
+SET rating = REPLACE(rating, '\N', null)
+WHERE rating = '\N'
+
+UPDATE movies
+SET num_rating = REPLACE(num_rating, '\N', null)
+WHERE num_rating = '\N'
+
+ALTER TABLE movies ALTER COLUMN rating TYPE REAL USING rating::real;
+
+ALTER TABLE movies ALTER COLUMN num_rating TYPE INTEGER USING num_rating::integer;
+
+
 CREATE TABLE actors(
 mid INTEGER NOT NULL,
 name VARCHAR(255) NOT NULL,
