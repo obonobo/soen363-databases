@@ -1,4 +1,4 @@
-INSERT INTO movies VALUES (
+INSERT INTO movies VALUES
     (1, 'Toy story', 1995, 3.7, 102338),
     (2, 'Jumanji', 1995, 3.2, 44587),
     (3, 'Grumpy Old Men', 1993, 3.2, 10489),
@@ -10195,5 +10195,5 @@ INSERT INTO movies VALUES (
     (65091, 'Manhattan Melodrama', 1934, 3.7, 344),
     (65126, 'Choke', 2008, 3.3, 13893),
     (65130, 'Revolutionary Road', 2008, 3.5, 46044),
-    (65133, 'Blackadder Back & Forth', 1999, 0, 0)
-);
+    (65133, 'Blackadder Back & Forth', 1999, 0, 0);
+
