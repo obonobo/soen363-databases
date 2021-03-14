@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS Movies (
     title VARCHAR(255),
     year INTEGER,
     rating REAL,
-    num_rating INTEGER,
+    num_ratings INTEGER,
     PRIMARY KEY(mid)
 );
 
