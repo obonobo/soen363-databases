@@ -1,8 +1,33 @@
 #!/bin/bash
 
-converter_call() {
-   mkdir output; for file in *.dat; do prefix=$(echo "$file" | python3 -c 'import sys; line = sys.stdin.readlines()[0]; print(line.split(".")[0])'); ./converter.py "${prefix}.dat" "INSERT INTO $prefix VALUES" > output/INSERT_${prefix}.sql ; done
+################################ SOEN 363 #####################################
+#
+# AUTHOR: @obonobo - Ethan Benabou - ethanbnb@gmail.com
+#
+
+print_done() {
+    echo -e "\033[0;32m done\033[0m"
 }
+
+# Convert all the .dat files in 'input' dir to .sql files in 'output' dir
+convert() (
+    prefix_dir=data
+
+    ! [[ -d ${prefix_dir}/output ]] && mkdir ${prefix_dir}/output
+
+    for file in ${prefix_dir}/input/*.dat; do
+        temp="$(basename $file)"
+        prefix=$(echo "$temp" | python3 \
+            -c 'import sys; print(sys.stdin.readlines()[0].split(".")[0])')
+
+        output="${prefix_dir}/output/INSERT_${prefix}.sql"
+        echo -n Converting $file to ${output} ...
+        ./${prefix_dir}/converter.py "$file" \
+                                     "INSERT INTO $prefix VALUES" \
+                                     > "$output"
+        print_done
+    done
+)
 
 connect() {
     env PGPASSWORD=admin123 \
@@ -22,7 +47,9 @@ stop() {
 
 # Executes a SQL file against the docker database
 execute_sql() {
-    connect -f $1
+    echo -e -n "Executing SQL file \033[0;34m${1}\033[0m ... \033[0;32m"
+    connect -f $1 || exit 1
+    echo -e -n "\033[0m"
 }
 
 new() {
@@ -41,14 +68,18 @@ load_all_data() (
 
 build_all() {
     new
-    sleep 1
-    execute_sql schema.sql
+    convert
+    while ! execute_sql schema.sql; do
+        echo 'Retrying...'
+        sleep 0.1
+    done
     load_all_data
 }
 
 main() {
     case $1 in
         connect)    connect                       ;;
+        convert)    convert                       ;;
         new)        new                           ;;
         start)      start                         ;;
         stop)       stop                          ;;
