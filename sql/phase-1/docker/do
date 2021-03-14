@@ -1,0 +1,62 @@
+#!/bin/bash
+
+converter_call() {
+   mkdir output; for file in *.dat; do prefix=$(echo "$file" | python3 -c 'import sys; line = sys.stdin.readlines()[0]; print(line.split(".")[0])'); ./converter.py "${prefix}.dat" "INSERT INTO $prefix VALUES" > output/INSERT_${prefix}.sql ; done
+}
+
+connect() {
+    env PGPASSWORD=admin123 \
+    psql --host localhost \
+         --port 5555 \
+         --user admin \
+         --dbname=soen363 $@
+}
+
+start() {
+    docker-compose start
+}
+
+stop() {
+    docker-compose stop
+}
+
+# Executes a SQL file against the docker database
+execute_sql() {
+    connect -f $1
+}
+
+new() {
+    docker-compose down
+    docker-compose up -d
+}
+
+load_all_data() (
+    data=data
+    execute_sql $data/output/*movies.sql
+    execute_sql $data/output/*tag_names.sql
+    execute_sql $data/output/*tags.sql
+    execute_sql $data/output/*actors.sql
+    execute_sql $data/output/*genres.sql
+)
+
+build_all() {
+    new
+    sleep 1
+    execute_sql schema.sql
+    load_all_data
+}
+
+main() {
+    case $1 in
+        connect)    connect                       ;;
+        new)        new                           ;;
+        start)      start                         ;;
+        stop)       stop                          ;;
+        sql)        execute_sql $2                ;;
+        all)        load_all_data                 ;;
+        build-all)  build_all                     ;;
+        *)          echo Command $1 unrecognized  ;;
+    esac
+}
+
+[[ ${BASH_SOURCE} == $0 ]] && main $@
