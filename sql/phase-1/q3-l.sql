@@ -1,9 +1,11 @@
+-- NEEDS LOADING
+
 /*Number Of Actors*/
 CREATE VIEW no_of_actors AS
 SELECT M.mid AS mid, COUNT(A.mid) as actorsCount
 FROM movies M
 JOIN actors A
-ON M.mid = A.mid                
+ON M.mid = A.mid
 GROUP BY M.mid;
 
 /*No Of Common Actors*/
@@ -23,7 +25,7 @@ WHERE M1.mid = N1.mid AND M1.mid = N2.mid1 AND M2.mid=N2.mid2 AND M1.mid != M2.m
 CREATE VIEW no_of_tags AS
 SELECT M.mid , COUNT(TT.tag) AS tagCount
 FROM movies M, tags T, tag_names TT
-WHERE T.tid = TT.tid AND T.mid = M.mid               
+WHERE T.tid = TT.tid AND T.mid = M.mid
 GROUP BY M.mid;
 
 /*No Of Common Tags*/
@@ -45,7 +47,7 @@ CREATE VIEW no_of_genres AS
 SELECT M.mid AS mid , COUNT(G.genre) as genreCount
 FROM movies M
 JOIN Genres G
-ON M.mid = G.mid                
+ON M.mid = G.mid
 GROUP BY M.mid;
 
 /*No Of Common Genres*/
@@ -62,26 +64,26 @@ FROM movies M1 , movies M2 ,no_of_genres N1, no_of_common_genres N2
 WHERE M1.mid = N1.mid AND M1.mid = N2.mid1 AND M2.mid=N2.mid2 AND M1.mid != M2.mid;
 
 /*Normalized year difference*/
-CREATE VIEW year_diff AS 
+CREATE VIEW year_diff AS
 SELECT M1.mid AS mid1, M2.mid AS mid2 ,M1.year, M2.year,1-(ABS(CAST( (M1.year-M2.year)As float))/CAST( (M1.year)As float)) AS diff
 FROM movies M1 ,movies M2
-WHERE M1.mid  != M2.mid 
+WHERE M1.mid  != M2.mid
 
 /*Normalized rating difference*/
 CREATE VIEW rating_diff AS
 SELECT M1.mid AS mid1, M2.mid AS mid2,DECODE(m1.rating, 0, 0,1-(ABS(M1.rating-M2.rating)/M1.rating))  AS diff
 FROM movies M1 ,movies M2
-WHERE M1.mid != M2.mid 
+WHERE M1.mid != M2.mid;
 
 /*Similarity Percentage View*/
 CREATE VIEW similarity_percentage AS
 SELECT M1.mid AS mid1 , M2.mid AS mid2 , (f1.diff + f2.diff + f3.diff + YD.diff + RD.diff)*100.0/5.0 AS Sim
 FROM movies M1,movies M2,fraction_of_common_actors f1,fraction_of_common_tags f2, fraction_of_common_genres f3,year_diff YD ,rating_diff RD
-WHERE M1.mid = f1.mid1 AND M2.mid = f1.mid2 AND M1.mid = f2.mid1 AND M2.mid = f2.mid2 AND M1.mid = f3.mid1 AND M2.mid = f3.mid2 AND M1.mid = YD.mid1 AND M2.mid = YD.mid2 AND M1.mid = RD.mid1 AND M2.mid = RD.mid2 AND M1.mid  != M2.mid 
+WHERE M1.mid = f1.mid1 AND M2.mid = f1.mid2 AND M1.mid = f2.mid1 AND M2.mid = f2.mid2 AND M1.mid = f3.mid1 AND M2.mid = f3.mid2 AND M1.mid = YD.mid1 AND M2.mid = YD.mid2 AND M1.mid = RD.mid1 AND M2.mid = RD.mid2 AND M1.mid  != M2.mid;
 
 /* Query*/
 SELECT M2.title, M2.rating,S.Sim
 FROM similarity_percentage S, movies M1,movies M2
 WHERE S.mid1 = m1.mid AND m1.title= 'Mr. & Mrs. Smith' AND S.mid2=M2.mid
 ORDER BY S.Sim DESC
-LIMIT 10
+LIMIT 10;

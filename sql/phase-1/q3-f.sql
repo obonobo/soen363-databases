@@ -2,13 +2,11 @@
 --                                  3-f
 -------------------------------------------------------------------------------
 
-
 --- (i)
 SELECT * FROM movies
 WHERE num_ratings = (
     SELECT MAX(num_ratings)
-    FROM movies
-);
+    FROM movies);
 
 
 --- (ii)
