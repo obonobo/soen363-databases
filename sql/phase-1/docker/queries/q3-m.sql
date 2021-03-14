@@ -5,6 +5,9 @@
 ---- LIST OF TABLE WITH DUPLICATES:
 --       - Movies
 --       - Actors (if we count the duplicate movie MIDs)
+--       - Genres (if we count the duplicate movie MIDs)
+--       - Tags (if we count the duplicate movie MIDs)
+
 
 
                             --==== MOVIES ====--
