@@ -30,7 +30,7 @@ FROM (
 
 SELECT M.title, M.year , M.rating
 FROM movies M
-ORDER BY M.year ASC, M.rating DESC
+ORDER BY M.year ASC, M.rating DESC;
         
 /*q3e*/
 
@@ -41,6 +41,7 @@ ORDER BY M.year ASC, M.rating DESC
 /*q3h*/
 
 /*q3i*/
+
 SELECT name
 FROM (
         SELECT A.name,MAX(M.year)-MIN(M.year) AS diff 
@@ -58,7 +59,6 @@ FROM (
 /*q3k*/
 
 /*q3l*/
-
 
 
 /*q3m*/
