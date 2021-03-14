@@ -4,10 +4,6 @@ import re
 import sys
 
 
-def get_file_name() -> str:
-    return "movies.dat"
-
-
 def parse_line(line: str, print_comma: bool = True) -> str:
     split = line.replace("\n", "").replace(r"\N", "null")
     split = split.replace("'", "''").split("\t")
@@ -32,8 +28,8 @@ def is_null(field: str) -> str:
     return field == "null"
 
 
-def read_movies(header: str, filename: str) -> str:
-    ret = f"{header}\n"
+def read_movies(table_name: str, filename: str) -> str:
+    ret = f"INSERT INTO {table_name} VALUES\n"
     with open(filename, "r") as fh:
         lines = fh.readlines()
         for line in lines[:-1]:
@@ -48,11 +44,11 @@ def main(*args, **kwargs) -> None:
 
 if __name__ == "__main__":
     args = {
-        'header': 'INSERT INTO movies VALUES',
-        'filename': get_file_name()
+        'table_name': 'movies',
+        'filename': 'movies.dat'
     }
     if len(sys.argv) > 1:
         args['filename'] = sys.argv[1]
     if len(sys.argv) > 2:
-        args['header'] = sys.argv[2]
+        args['table_name'] = sys.argv[2]
     main(**args)

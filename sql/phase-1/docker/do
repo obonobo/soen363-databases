@@ -21,9 +21,9 @@ convert() (
             -c 'import sys; print(sys.stdin.readlines()[0].split(".")[0])')
 
         output="${prefix_dir}/output/INSERT_${prefix}.sql"
-        echo -n Converting $file to ${output} ...
+        echo -n -e "Converting \033[0;34m${file}\033[0m to \033[0;34m${output}\033[0m ..."
         ./${prefix_dir}/converter.py "$file" \
-                                     "INSERT INTO $prefix VALUES" \
+                                     "$prefix" \
                                      > "$output"
         print_done
     done
@@ -48,8 +48,10 @@ stop() {
 # Executes a SQL file against the docker database
 execute_sql() {
     echo -e -n "Executing SQL file \033[0;34m${1}\033[0m ... \033[0;32m"
-    connect -f $1 || exit 1
-    echo -e -n "\033[0m"
+	connect -f $1
+	ret=$?
+	echo -e -n "\033[0m"
+	return $ret
 }
 
 new() {
