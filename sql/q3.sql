@@ -28,18 +28,10 @@ FROM (
 
 /*q3d*/
 
-/*Assuming that question is asking for seperate queries*/
-
---Ascending order of movie year
 SELECT M.title, M.year , M.rating
 FROM movies M
-ORDER BY M.year;
+ORDER BY M.year ASC, M.rating DESC
         
---Descending order of movie rating
-SELECT M.title, M.year , M.rating
- FROM movies M
-ORDER BY M.rating DESC;
-
 /*q3e*/
 
 /*q3f*/
