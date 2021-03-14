@@ -1,0 +1,5 @@
+CREATE VIEW
+ count 
+-------
+   534
+(1 row)

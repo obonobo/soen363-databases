@@ -3,6 +3,7 @@
 -------------------------------------------------------------------------------
 -- NEEDS LOADING
 
+-- (i)
 
 -- High rating view:
 CREATE VIEW high_ratings AS
@@ -35,7 +36,6 @@ FROM low_ratings;
 -- (iii)
 SELECT name, COUNT(mid)
 FROM actors WHERE name
-IN ((SELECT * FROM high_ratings)
-EXCEPT (SELECT * FROM low_ratings))
+IN ((SELECT * FROM high_ratings) EXCEPT (SELECT * FROM low_ratings))
 GROUP BY name
 ORDER BY count DESC;

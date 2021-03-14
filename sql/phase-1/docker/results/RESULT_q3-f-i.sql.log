@@ -1,0 +1,5 @@
+  mid  |                  title                   | year | rating | num_ratings 
+-------+------------------------------------------+------+--------+-------------
+  4201 | Pirates of the Caribbean: At World's End | 2007 |    3.8 |     1768593
+ 53125 | Pirates of the Caribbean: At World's End | 2007 |    3.8 |     1768593
+(2 rows)

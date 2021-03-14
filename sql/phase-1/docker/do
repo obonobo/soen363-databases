@@ -47,10 +47,9 @@ stop() {
 
 # Executes a SQL file against the docker database
 execute_sql() {
-    echo -e -n "Executing SQL file \033[0;34m${1}\033[0m ... \033[0;32m"
+    echo -e "Executing SQL file \033[0;34m${1}\033[0m ..."
 	connect -f $1
 	ret=$?
-	echo -e -n "\033[0m"
 	return $ret
 }
 
@@ -78,10 +77,16 @@ build_all() {
     load_all_data
 }
 
+record_query() (
+    save_as="RESULT_$(basename $1).log"
+    execute_sql $1 | head -n -1 | tail -n +2 | tee "$save_as"
+)
+
 main() {
     case $1 in
         connect)    connect                       ;;
         convert)    convert                       ;;
+        record)     record_query $2               ;;
         new)        new                           ;;
         start)      start                         ;;
         stop)       stop                          ;;
