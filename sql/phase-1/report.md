@@ -12,10 +12,12 @@
 - `data/`: scripts for pre-processing the input `.dat` files.
 - `sql/`: queries, views, etc. to answer the assignment questions.
 - `results-csv/`: csv files displaying the output of all queries.
+  - `results-csv/performance.csv`: Raw performance metrics from question 4.
+  - `results-csv/q3-*.csv`: Raw output from the queries in each question.
 - `docker/`: docker-compose file and scripts for using Postgres.
 - `schema.sql`: SQL statements for creating the table schema.
-- `performance.csv`: Raw performance metric
 - `erd.png`: Entity-Relation diagram, exported from Postgres.
+- `report.pdf`, `report.md`: This report.
 
 ## Introduction
 
@@ -32,7 +34,10 @@ Python script was created to parse the provided `.dat` files and produce fat
 pre-processing step proved to be much quicker than importing the raw `.dat`
 files and it also provided the opportunity to replace all instance of the string
 '\N' with the SQL value `null`. The queries were written. You can find all
-queries, views, and other SQL statements that were created in the
+queries, views, and other SQL statements that were created in the `results-csv`
+directory included in this submission. Finally, the performance metrics were
+calculated for question 4, where query performance was measured with indexing vs
+without indexing, and the performance of materialized views was investigated.
 
 ## Procedures
 
