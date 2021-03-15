@@ -4,11 +4,11 @@ FROM movies M
 JOIN actors A ON M.mid = A.mid
 WHERE A.name = 'Daniel Craig'
 ORDER BY M.title;",358 msec,208 msec
-SELECT A.name,,
-FROM actors A,,
-JOIN movies M ON M.mid = A.mid,147 msec,
-WHERE M.title = 'The Dark Knight',,
-ORDER BY A.name;,,
+"SELECT A.name
+FROM actors A
+JOIN movies M ON M.mid = A.mid
+WHERE M.title = 'The Dark Knight'
+ORDER BY A.name;",147 msec,N/A
 "SELECT genre
 FROM (
     SELECT G.genre, COUNT(G.mid) AS movieCount
@@ -17,10 +17,10 @@ FROM (
     ON M.mid = G.mid
     GROUP BY G.genre
 ) AS Temp
-WHERE movieCount>1000;",133 msec,
+WHERE movieCount>1000;",133 msec,N/A
 "SELECT M.title, M.year , M.rating
 FROM movies M
-ORDER BY M.year ASC, M.rating DESC;",187 msec,
+ORDER BY M.year ASC, M.rating DESC;",187 msec,N/A
 "SELECT title FROM movies AS m
 WHERE EXISTS (
     SELECT mid FROM tags
@@ -35,16 +35,15 @@ AND EXISTS (
 "SELECT * FROM movies
 WHERE num_ratings = (
     SELECT MAX(num_ratings)
-    FROM movies);",149 msec,
+    FROM movies);",149 msec,N/A
 "SELECT * FROM movies
 WHERE rating = (
     SELECT MAX(rating) FROM movies)
-ORDER BY mid;",233 msec,
-,,
-SELECT * FROM movies,,
-WHERE rating = (,203 msec,
-    SELECT MAX(rating) FROM movies),,
-ORDER BY mid;,,
+ORDER BY mid;",233 msec,165 msec
+"SELECT * FROM movies
+WHERE rating = (
+    SELECT MAX(rating) FROM movies)
+ORDER BY mid;",203 msec,
 "(
     SELECT * FROM movies
     WHERE num_rating = (
@@ -55,15 +54,15 @@ ORDER BY mid;,,
     WHERE rating = (
         SELECT MAX(rating)
         FROM movies)
-);",170 msec,
+);",170 msec,158 msec
 "SELECT * FROM movies
 WHERE num_ratings = (SELECT MAX(num_ratings) FROM movies)
-AND   rating      = (SELECT MAX(rating) FROM movies);",146 msec,
+AND   rating      = (SELECT MAX(rating) FROM movies);",197 msec,146 msec
 "SELECT * FROM movies
 WHERE rating = (
     SELECT MIN(rating)
     FROM movies)
-ORDER BY mid;",235 msec,
+ORDER BY mid;",235 msec,N/A
 "(
     SELECT * FROM movies
     WHERE num_ratings = (
@@ -74,10 +73,10 @@ ORDER BY mid;",235 msec,
     WHERE rating = (
         SELECT MIN(rating)
         FROM movies)
-);",208 msec,
+);",208 msec,145 msec
 "SELECT * FROM movies
 WHERE num_rating = (SELECT MAX(num_rating) FROM movies)
-AND   rating      = (SELECT MIN(rating) FROM movies);",163 msec,
+AND   rating      = (SELECT MIN(rating) FROM movies);",182 msec,163 msec
 "SELECT m.year, m.title, m.rating
 FROM movies m, (SELECT m.year, MIN(rating) AS min_rating, MAX(rating) AS max_rating
                 FROM movies m
@@ -89,14 +88,14 @@ WHERE m.year = mm.year
 AND (m.rating = mm.min_rating
 OR m.rating = mm.max_rating)
 GROUP BY m.year, m.title, m.rating
-ORDER BY m.year, m.rating, m.title;",152 msec,
+ORDER BY m.year, m.rating, m.title;",252 msec,172 msec
 "SELECT COUNT(*)
 AS numbers_of_rows
-FROM high_ratings;",217 msec,
+FROM high_ratings;",217 msec,127 msec
 "SELECT COUNT(*)
 AS numbers_of_rows
-FROM low_ratings;",270 msec,
-(SELECT * FROM high_ratings) EXCEPT (SELECT * FROM low_ratings);,433 msec,
+FROM low_ratings;",270 msec,240 msec
+(SELECT * FROM high_ratings) EXCEPT (SELECT * FROM low_ratings);,433 msec,N/A
 "SELECT name, COUNT(mid)
 FROM actors WHERE name
 IN ((SELECT * FROM high_ratings) EXCEPT (SELECT * FROM low_ratings))
@@ -110,14 +109,14 @@ ORDER BY count DESC;",455 msec,N/A
     HAVING A.name LIKE '%_%'
     ORDER BY diff DESC
     LIMIT 1
-) AS TEMP;",252 msec,
+) AS TEMP;",252 msec,N/A
 "SELECT a.name, COUNT(DISTINCT(a2.name))
 FROM actors AS a
 JOIN actors AS a2 ON TRUE
 JOIN movies AS m  ON a.mid = m.mid
 JOIN movies AS m2 ON a2.mid = m2.mid AND m2.mid = m.mid AND a.name != a2.name
 WHERE LOWER(a.name) LIKE 'tom cruise'
-GROUP BY a.name;",169 msec,
+GROUP BY a.name;",287 msec,163 msec
 "SELECT * FROM distinct_co_actors
 WHERE num_co_actors = (
     SELECT MAX(num_co_actors)
@@ -129,16 +128,7 @@ JOIN actors AS a2 ON TRUE
 JOIN movies AS m  ON a.mid = m.mid
 JOIN movies AS m2 ON a2.mid = m2.mid AND m2.mid = m.mid AND a.name != a2.name
 WHERE LOWER(a.name) LIKE 'tom cruise'
-GROUP BY a.name;",280 msec,
-"SELECT MIN(mid) AS mid, title, year, rating, num_rating
-FROM movies
-GROUP BY title, year, rating, num_rating
-ORDER BY title;
-
-CREATE VIEW movies_no_duplicates AS
-    SELECT MIN(mid) AS mid, title, year, rating, num_rating
-    FROM movies
-    GROUP BY title, year, rating, num_rating;",222 msec,
+GROUP BY a.name;",280 msec,207 msec
 "SELECT name, cast_position, title AS movie_title, temp.count AS count FROM (
     SELECT name, cast_position, title,
            year, rating, num_ratings,
@@ -147,7 +137,7 @@ CREATE VIEW movies_no_duplicates AS
     JOIN movies ON actors.mid = movies.mid
     GROUP BY name, cast_position, title, year, rating, num_ratings
     HAVING COUNT(movies.mid) > 1) AS temp
-ORDER BY name, cast_position;",639 msec,
+ORDER BY name, cast_position;",639 msec,N/A
 "SELECT name, cast_position, title AS movie_title, temp.count AS count FROM (
     SELECT name, cast_position, title,
            year, rating, num_rating,
@@ -156,7 +146,7 @@ ORDER BY name, cast_position;",639 msec,
     JOIN movies ON actors.mid = movies.mid
     GROUP BY name, cast_position, title, year, rating, num_rating
     HAVING COUNT(movies.mid) > 1) AS temp
-ORDER BY name, cast_position;",582 msec,
+ORDER BY name, cast_position;",582 msec,N/A
 "SELECT genre, title AS movie_title, temp.count AS count FROM (
     SELECT genre, title, year, rating,
            num_rating, COUNT(movies.mid)
@@ -165,12 +155,12 @@ ORDER BY name, cast_position;",582 msec,
     GROUP BY genre, title, year, rating, num_rating
     HAVING COUNT(movies.mid) > 1)
 AS temp
-ORDER BY genre, movie_title;",201 msec,
+ORDER BY genre, movie_title;",201 msec,N/A
 "SELECT tag, COUNT(tid)
 FROM tag_names
 GROUP BY tag
 HAVING COUNT(tid) > 1
-ORDER BY tag;",143 msec,
+ORDER BY tag;",143 msec,117 msec
 "SELECT tid, tag, title AS movie_title, temp.count AS count FROM (
     SELECT tags.tid, tag, title, year, rating,
            num_rating, COUNT(movies.mid)
@@ -180,7 +170,7 @@ ORDER BY tag;",143 msec,
     GROUP BY tags.tid, tag, title, year, rating, num_rating
     HAVING COUNT(movies.mid) > 1)
 AS temp
-ORDER BY tid, tag, movie_title;",477 msec,
+ORDER BY tid, tag, movie_title;",477 msec,N/A
 "SELECT normal_count, no_duplicate_count,
        (normal_count = no_duplicate_count) AS equal
 FROM (
@@ -188,7 +178,7 @@ FROM (
     FROM tag_names) AS normal
 JOIN (
     SELECT COUNT(*) AS no_duplicate_count
-    FROM tag_names_no_duplicates) as no_dup ON TRUE;",,
+    FROM tag_names_no_duplicates) as no_dup ON TRUE;",204 msec,180 msec
 "SELECT normal_count, no_duplicate_count,
        (normal_count = no_duplicate_count) AS equal
 FROM (
@@ -196,7 +186,7 @@ FROM (
     FROM tag_names) AS normal
 JOIN (
     SELECT COUNT(*) AS no_duplicate_count
-    FROM tag_names_no_duplicates) as no_dup ON TRUE;",157 msec,
+    FROM tag_names_no_duplicates) as no_dup ON TRUE;",157 msec,N/A
 "SELECT M2.title, M2.rating,S.Sim
 FROM similarity_percentage S, movies M1,movies M2
 WHERE S.mid1 = m1.mid AND m1.title= 'Mr. & Mrs. Smith' AND S.mid2=M2.mid
