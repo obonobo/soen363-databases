@@ -18,13 +18,29 @@
 
 ## Introduction
 
-**DATABASE:** PostgreSQL v12.6 in Docker
+**DATABASE:** PostgreSQL v13 in Docker
 
+PostgreSQL was used as the database for this phase of the project. Postgres v13
+was run inside of Docker and the process was scripted as much as possible to
+increase repeatability, and remove the "it works on my machine" scenario.
+
+***To see the queries along with detailed comments on each statement, check out
+the `.sql` files in the `sql/` directory***
 
 ## Procedures
 
+The following process was followed for creating the database and developing the
+the queries:
 
-
+1. Clean the data
+   - Using Python, the `.dat` files were converted to `.sql` files containing
+     `INSERT` statements that could easily be run to import the data. The '\N'
+     strings were replaced with `null`.
+2. Spin up a fresh instance of Postgres running in Docker.
+3. Create the table schemata.
+4. Execute the INSERT statements to populate the database.
+5. Run the queries, save the results to `.csv` files using the `psql`
+   commandline tool.
 
 ## Performance Analysis
 
@@ -39,15 +55,15 @@
 
 ## Discussion
 
-Based on the observation obtained , it is confirmed that that the execution time of
-materialized views complete in proportionately less time compared to that of normal
-views.  As materialized views exist physically as entities in disk space, the execution
-time is much quicker that views which are simply stored in a temporary virtual space
-after view creation. Hence, it is recommended to use materialized views in the storage
-of data with a seldom need for updates.
+Based on the observation obtained , it is confirmed that that the execution time
+of materialized views complete in proportionately less time compared to that of
+normal views.  As materialized views exist physically as entities in disk space,
+the execution time is much quicker that views which are simply stored in a
+temporary virtual space after view creation. Hence, it is recommended to use
+materialized views in the storage of data with a seldom need for updates.
 
 However unlike normal views , materialized views are not automated to be updated
-with each view use. Materialized views need to be manually updated with via specific
-commands or the use of triggers, in comparison, normal views are updated after each
-view use in different query statements, making normal views much more responsive in
-storing up-to-date information.
+with each view use. Materialized views need to be manually updated with via
+specific commands or the use of triggers, in comparison, normal views are
+updated after each view use in different query statements, making normal views
+much more responsive in storing up-to-date information.
