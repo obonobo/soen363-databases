@@ -30,10 +30,10 @@
 
 | Question No.  | Type                   | Execution time  |
 | ------------- |:----------------------:| ---------------:|
-| 3-k-2         | View                   | 25 sec 318 msec |
-| 3-l           | View                   |                 |
-| 4-k-2         | Materialized View      | 147 msec        |
-| 4-i           | Materialized View      |                 |
+| 3-K-2         | View                   | 25 sec 318 msec |
+| 3-L           | View                   | 2 min 29 sec    |
+| 4-K-2         | Materialized View      | 147 msec        |
+| 4-L           | Materialized View      | 226 msec        |
 
 
 
