@@ -14,7 +14,8 @@
 - `results-csv/`: csv files displaying the output of all queries.
   - `results-csv/performance.csv`: Raw performance metrics from question 4.
   - `results-csv/q3-*.csv`: Raw output from the queries in each question.
-- `docker/`: docker-compose file and scripts for using Postgres.
+- `docker-compose.yml`: docker-compose file for Postgres:latest.
+- `do.sh`: commandline utility for managing the postgres docker instance.
 - `schema.sql`: SQL statements for creating the table schema.
 - `erd.png`: Entity-Relation diagram, exported from Postgres.
 - `report.pdf`, `report.md`: This report.
