@@ -65,15 +65,15 @@ WHERE M1.mid = N1.mid AND M1.mid = N2.mid1 AND M2.mid=N2.mid2 AND M1.mid != M2.m
 
 /*Normalized year difference*/
 CREATE VIEW year_diff AS
-SELECT M1.mid AS mid1, M2.mid AS mid2 ,M1.year as year1, M2.year as year2 ,1-(ABS(CAST( (M1.year-M2.year)As float))/CAST( (M1.year)As float)) AS diff
+SELECT M1.mid AS mid1, M2.mid AS mid2,1-(ABS(CAST( (M1.year-M2.year)As float))/CAST( (M1.year)As float)) AS diff
 FROM movies M1 ,movies M2
 WHERE M1.mid  != M2.mid;
 
 /*Normalized rating difference*/
 CREATE VIEW rating_diff AS
-SELECT M1.mid AS mid1, M2.mid AS mid2, DECODE(m1.rating, 0, 0, 1-(ABS(M1.rating-M2.rating)/M1.rating)) AS diff
+SELECT M1.mid AS mid1, M2.mid AS mid2, 1-(ABS(M1.rating-M2.rating)/M1.rating)  AS diff
 FROM movies M1 ,movies M2
-WHERE M1.mid != M2.mid;
+WHERE M1.mid != M2.mid AND M1.rating!= 0;
 
 /*Similarity Percentage View*/
 CREATE VIEW similarity_percentage AS
