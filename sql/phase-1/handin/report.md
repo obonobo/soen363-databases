@@ -1,23 +1,32 @@
-# REPORT
+# SOEN 363 - Phase 1 Assignment
 
 ## Team Members
 
-- Anthony Chraim
-- Ethan Benabou
-- Justin Loh
-- Mohamed Amine Kihal  - 40046046
+- Anthony Chraim 40091014
+- Ethan Benabou 40032543
+- Justin Loh 40073776
+- Mohamed Amine Kihal 40046046
 
 ## Files
 
 - `data/`: scripts for pre-processing the input `.dat` files.
+
 - `sql/`: queries, views, etc. to answer the assignment questions.
+
 - `results-csv/`: csv files displaying the output of all queries.
+
   - `results-csv/performance.csv`: Raw performance metrics from question 4.
+
   - `results-csv/q3-*.csv`: Raw output from the queries in each question.
+
 - `docker-compose.yml`: docker-compose file for Postgres:latest.
+
 - `do.sh`: commandline utility for managing the postgres docker instance.
+
 - `schema.sql`: SQL statements for creating the table schema.
+
 - `erd.png`: Entity-Relation diagram, exported from Postgres.
+
 - `report.pdf`, `report.md`: This report.
 
 ## Introduction
