@@ -18,14 +18,15 @@
 
 ## Introduction
 
+***To see the queries along with detailed comments on each statement, check out
+the `.sql` files in the `sql/` directory***
+
+
 **DATABASE:** PostgreSQL v13 in Docker
 
 PostgreSQL was used as the database for this phase of the project. Postgres v13
 was run inside of Docker and the process was scripted as much as possible to
 increase repeatability, and remove the "it works on my machine" scenario.
-
-***To see the queries along with detailed comments on each statement, check out
-the `.sql` files in the `sql/` directory***
 
 ## Procedures
 
@@ -52,7 +53,6 @@ the queries:
 | 4-L           | Materialized View      | 226 msec        |
 
 
-
 ## Discussion
 
 Based on the observation obtained , it is confirmed that that the execution time
@@ -67,3 +67,18 @@ with each view use. Materialized views need to be manually updated with via
 specific commands or the use of triggers, in comparison, normal views are
 updated after each view use in different query statements, making normal views
 much more responsive in storing up-to-date information.
+
+
+## Assumptions
+
+- **q3-m**:
+  - There are no duplicates, other than those that appear in the movies table,
+    but movie id is a foreign key for many other tables.
+  - You might want to remove these redundant movie id records from other tables.
+  - For example, actors who act in a movie that is duplicated will receive
+    credit twice for acting in the same movie.
+  - These queries are implemented with the intent that we want to remove these
+    extra records from all tables.
+  - For example, to ensure that all records in actors table correspond to unique
+    (non-duplicate) movies (actors do not get credited or the duplicate movies
+    they star in).
