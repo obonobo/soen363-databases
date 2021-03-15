@@ -14,6 +14,7 @@
 - `results-csv/`: csv files displaying the output of all queries.
 - `docker/`: docker-compose file and scripts for using Postgres.
 - `schema.sql`: SQL statements for creating the table schema.
+- `performance.csv`: Raw performance metric
 - `erd.png`: Entity-Relation diagram, exported from Postgres.
 
 ## Introduction
@@ -21,12 +22,17 @@
 ***To see the queries along with detailed comments on each statement, check out
 the `.sql` files in the `sql/` directory***
 
-
 **DATABASE:** PostgreSQL v13 in Docker
 
 PostgreSQL was used as the database for this phase of the project. Postgres v13
 was run inside of Docker and the process was scripted as much as possible to
-increase repeatability, and remove the "it works on my machine" scenario.
+increase repeatability, and to remove the "it works on my machine" scenario. A
+Python script was created to parse the provided `.dat` files and produce fat
+`INSERT` statements with a tuple for every row in the `.dat` file. This
+pre-processing step proved to be much quicker than importing the raw `.dat`
+files and it also provided the opportunity to replace all instance of the string
+'\N' with the SQL value `null`. The queries were written. You can find all
+queries, views, and other SQL statements that were created in the
 
 ## Procedures
 
@@ -67,7 +73,6 @@ with each view use. Materialized views need to be manually updated with via
 specific commands or the use of triggers, in comparison, normal views are
 updated after each view use in different query statements, making normal views
 much more responsive in storing up-to-date information.
-
 
 ## Assumptions
 
