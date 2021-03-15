@@ -7,7 +7,18 @@
 --       - Actors (if we count the duplicate movie MIDs)
 --       - Genres (if we count the duplicate movie MIDs)
 --       - Tags (if we count the duplicate movie MIDs)
-
+--
+-- ASSUMPTIONS:
+--       - There are no duplicates, other than those that appear in the movies
+--         table, but movie id is a foreign key for many other tables.
+--       - You might want to remove this redundant movie id records from other
+--         tables.
+--       - For example, actors who act in a movie that is duplicated will receive
+--         credit twice for acting in the same movie.
+--       - These queries are implemented with the intent that we want to remove
+--         this extra records from all tables.
+--       - For example, to ensure that all records in actors table correspond to
+--         unique (non-duplicate) movies.
 
 
                             --==== MOVIES ====--
@@ -31,7 +42,7 @@ CREATE VIEW movies_no_duplicates AS
 
 
                             --==== ACTORS ====--
--- We might want to remove the duplicate movie records from the actors table
+-- We might want to remove the duplicate movie records from the actors table.
 -- If there is a pair of duplicate movie records and the actor has an associated
 -- record for each movie, then we may want to remove those duplicate movies from
 -- both the movies table and the actors table
@@ -138,4 +149,3 @@ CREATE VIEW tags_no_duplicates AS
         GROUP BY title, year, rating, num_ratings
     ) AS movies_no_dup ON movies_no_dup.mid = tags.mid
     ORDER BY tid, mid;
-
