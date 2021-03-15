@@ -10,6 +10,7 @@
 ## Performance
 | Question No.  | Type                   | Execution time  |
 | ------------- |:----------------------:| ---------------:|
-|               | View                   |                 |
-|               | Materialized View      |                 |
-|               | Materialized View      |                 |
+| 3-k-2         | View                   |                 |
+| 3-l           | View                   |                 |
+| 4-k-2         | Materialized View      |                 |
+| 4-i           | Materialized View      |                 |
