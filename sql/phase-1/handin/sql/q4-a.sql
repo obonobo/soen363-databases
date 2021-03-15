@@ -7,9 +7,7 @@ CREATE INDEX genres_idx1 ON movies (title);
 
 CREATE INDEX tag_name_idx1 ON tag_names (tag);
 
--- Index for question 3-L
 CREATE INDEX similarity_percentage_indx1 ON similarity_percentage(sim);
 
--- Index for question 3-K-2
 
 
