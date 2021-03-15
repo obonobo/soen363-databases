@@ -11,15 +11,15 @@
 -- ASSUMPTIONS:
 --       - There are no duplicates, other than those that appear in the movies
 --         table, but movie id is a foreign key for many other tables.
---       - You might want to remove this redundant movie id records from other
+--       - You might want to remove these redundant movie id records from other
 --         tables.
 --       - For example, actors who act in a movie that is duplicated will receive
 --         credit twice for acting in the same movie.
 --       - These queries are implemented with the intent that we want to remove
---         this extra records from all tables.
+--         these extra records from all tables.
 --       - For example, to ensure that all records in actors table correspond to
---         unique (non-duplicate) movies.
-
+--         unique (non-duplicate) movies (actors do not get credited or the duplicate
+--         movies they star in).
 
                             --==== MOVIES ====--
 -- Find duplicates in movies table
@@ -50,7 +50,7 @@ CREATE VIEW movies_no_duplicates AS
 -- This would be easier to start off with doing the no-duplicate movie view and
 -- then simply doing a join with this view and actors table to create a new view
 
--- Display all duplicates from actors
+-- Display actors and the duplicate movies they starred in
 SELECT name, cast_position, title AS movie_title, temp.count AS count FROM (
     SELECT name, cast_position, title,
            year, rating, num_ratings,
@@ -61,7 +61,7 @@ SELECT name, cast_position, title AS movie_title, temp.count AS count FROM (
     HAVING COUNT(movies.mid) > 1) AS temp
 ORDER BY name, cast_position;
 
--- Actors table, no duplicates
+-- Actors table, no duplicate movies
 CREATE VIEW actors_no_duplicates AS
     SELECT actors.* FROM actors
     JOIN (
@@ -72,7 +72,7 @@ CREATE VIEW actors_no_duplicates AS
 
 
                             --==== GENRES ====--
--- Display all duplicate genres
+-- Display all duplicate movie genres
 SELECT genre, title AS movie_title, temp.count AS count FROM (
     SELECT genre, title, year, rating,
            num_ratings, COUNT(movies.mid)
@@ -83,7 +83,7 @@ SELECT genre, title AS movie_title, temp.count AS count FROM (
 AS temp
 ORDER BY genre, movie_title;
 
--- Genres table, no duplicates
+-- Genres table, no duplicate movies
 CREATE VIEW genres_no_duplicates AS
     SELECT genres.* FROM genres
     JOIN (
@@ -95,7 +95,7 @@ CREATE VIEW genres_no_duplicates AS
 
 
                           --==== TAG_NAMES ====--
--- Display all duplicate tag_names
+-- Display all duplicate movie tag_names
 SELECT tag, COUNT(tid)
 FROM tag_names
 GROUP BY tag
@@ -140,7 +140,7 @@ SELECT tid, tag, title AS movie_title, temp.count AS count FROM (
 AS temp
 ORDER BY tid, tag, movie_title;
 
--- Tags table, no duplicates
+-- Tags table, no movie duplicates
 CREATE VIEW tags_no_duplicates AS
     SELECT tags.* FROM tags
     JOIN (
