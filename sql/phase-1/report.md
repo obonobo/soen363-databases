@@ -8,9 +8,9 @@
 
 
 ## Performance
-| Question No.  | Type                   | Execution time  |
-| ------------- |:----------------------:| ---------------:|
-| 3-k-2         | View                   |                 |
-| 3-l           | View                   |                 |
-| 4-k-2         | Materialized View      |                 |
-| 4-i           | Materialized View      |                 |
+| Question No.  | Type                   | Execution time  | Indexing/time |
+| ------------- |:----------------------:| ---------------:|---------------:
+| 3-k-2         | View                   | 25 sec 318 msec |     147 msec. |
+| 3-l           | View                   |                 |               |
+| 4-k-2         | Materialized View      |                 |               |
+| 4-i           | Materialized View      |                 |               |
