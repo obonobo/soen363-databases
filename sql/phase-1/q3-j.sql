@@ -1,5 +1,10 @@
-1.
---REMEMBER TO REPLACE  
+-------------------------------------------------------------------------------
+--                                  3-j                                      --
+-------------------------------------------------------------------------------
+--          NEEDS LOADING
+
+-- 1.
+--REMEMBER TO REPLACE
 CREATE VIEW co_actors AS
 SELECT DISTINCT name
 FROM actors
@@ -11,7 +16,7 @@ SELECT COUNT(1)
 FROM co_actors
 --178
 
-2.
+-- 2.
 create VIEW all_combinations AS
 SELECT c.name, m.mid
 FROM co_actors c, movies m
@@ -21,7 +26,7 @@ SELECT COUNT(1)
 FROM all_combinations
 --534
 
-3.
+-- 3.
 CREATE VIEW non_existent AS
 SELECT ac.mid, ac.name
 FROM all_combinations ac
@@ -34,9 +39,10 @@ SELECT COUNT(1)
 FROM non_existent
 --239
 
-4.
+-- 4.
 SELECT ca.name
 FROM co_actors ca
-LEFT JOIN non_existent ne 
+LEFT JOIN non_existent ne
 ON ne.name = ca.name
 WHERE ne.name is null
+
