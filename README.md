@@ -1,7 +1,8 @@
 # soen363-databases
 
-Database project for Concordia courses SOEN-363
 
-## Contributing
+## Phase 2
 
-Just go ahead and add your SQL statements in a file inside `sql/` dir
+MOVIES DATASET: <https://www.kaggle.com/rounakbanik/the-movies-dataset>
+
+Direct download: <https://liveconcordia-my.sharepoint.com/:u:/g/personal/e_benab_live_concordia_ca/EXHbqdj595RGozwN66H9E-8BycHg3PU4BAGJMAJDZU39QQ?e=n1IY4o>
