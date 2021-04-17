@@ -1,6 +1,6 @@
 CREATE TABLE movies_metadata(
     id INTEGER NOT NULL,
-    adult BOOLEAN NOT NULL,
+    adult BOOLEAN,
     belongs_to_collection TEXT,
     budget INTEGER,
     genre VARCHAR,
@@ -9,6 +9,19 @@ CREATE TABLE movies_metadata(
     original_language VARCHAR(2),
     original_title TEXT,
     overview VARCHAR,
+    popularity REAL,
+    poster_path VARCHAR,
+    production_companies VARCHAR,
+    release_date TIMESTAMP,
+    revenue INTEGER,
+    runtime INTEGER,
+    spoken_languages TEXT,
+    "status" VARCHAR,
+    tagline VARCHAR,
+    title VARCHAR,
+    video BOOLEAN,
+    vote_average REAL,
+    vote_count INTEGER,
     PRIMARY KEY(id)
 );
 
