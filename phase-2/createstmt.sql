@@ -59,7 +59,6 @@ CREATE TABLE employes(
     FOREIGN KEY (CityID) REFERENCES cities(CityID)
 );
 
-
 CREATE TABLE sales(
     SalesID INTEGER NOT NULL,
     SalesPersonID INTEGER NOT NULL,
