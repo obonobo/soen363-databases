@@ -5,6 +5,18 @@
 # AUTHOR: @obonobo - Ethan Benabou - ethanbnb@gmail.com
 #
 
+populate_database() (
+    DIR=data/output
+    execute_sql create.pgsql
+    execute_sql "$DIR/INSERT_countries.sql"
+    execute_sql "$DIR/INSERT_cities.sql"
+    execute_sql "$DIR/INSERT_customers.sql"
+    execute_sql "$DIR/INSERT_categories.sql"
+    execute_sql "$DIR/INSERT_products.sql"
+    execute_sql "$DIR/INSERT_employes.sql"
+    execute_sql "$DIR/INSERT_sales.chunked.sql"
+)
+
 replace_all_nulls() {
     for file in *; do
         sed  "s/'NULL'/NULL/g" "$file" > temp.sql && mv temp.sql "$file"
@@ -70,23 +82,11 @@ new() {
     docker-compose up -d
 }
 
-load_all_data() (
-    data=data
-    execute_sql $data/output/*movies.sql
-    execute_sql $data/output/*tag_names.sql
-    execute_sql $data/output/*tags.sql
-    execute_sql $data/output/*actors.sql
-    execute_sql $data/output/*genres.sql
-)
-
 build_all() {
-    new
-    convert
-    while ! execute_sql schema.sql; do
-        echo 'Retrying...'
-        sleep 0.1
-    done
-    load_all_data
+    new \
+        && echo "Waiting 20s for postgres to start..." \
+        && sleep 20 \
+        && populate_database
 }
 
 record_query() (
