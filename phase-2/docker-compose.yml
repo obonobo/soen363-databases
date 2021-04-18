@@ -1,7 +1,8 @@
 version: "3.8"
 services:
   postgres:
-    image: postgres:latest
+    # image: postgres:latest
+    image: buttchuggg/soen363-phase-2-postgres:latest
     ports:
       - 5555:5432
     networks:
@@ -10,7 +11,7 @@ services:
       POSTGRES_DB: soen363
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin123
-      PG_DATA: /data
+      PGDATA: /data
     healthcheck:
       test: ["CMD", "pg_isready"]
       interval: 10s
