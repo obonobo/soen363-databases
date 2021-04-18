@@ -1,11 +1,11 @@
-CREATE TABLE countries(
+CREATE TABLE IF NOT EXISTS countries(
     CountryID INTEGER NOT NULL,
     CountryName VARCHAR(50),
     CountryCode VARCHAR(2),
     PRIMARY KEY (CountryID)
 );
 
-CREATE TABLE cities(
+CREATE TABLE IF NOT EXISTS cities(
     CityID INTEGER NOT NULL,
     CityName VARCHAR(50),
     Zipcode INTEGER,
@@ -14,7 +14,7 @@ CREATE TABLE cities(
     FOREIGN KEY (CountryID) REFERENCES countries(CountryID)
 );
 
-CREATE TABLE customers(
+CREATE TABLE IF NOT EXISTS customers(
     CustomerID INTEGER NOT NULL,
     FirstName VARCHAR(50),
     MiddleInitial VARCHAR(1),
@@ -25,13 +25,13 @@ CREATE TABLE customers(
     FOREIGN KEY (CityID) REFERENCES cities(CityID)
 );
 
-CREATE TABLE categories(
+CREATE TABLE IF NOT EXISTS categories(
     CategoryID INTEGER NOT NULL,
     CategoryName VARCHAR(50),
     PRIMARY KEY (CategoryID)
 );
 
-CREATE TABLE products(
+CREATE TABLE IF NOT EXISTS products(
     ProductID INTEGER NOT NULL,
     ProductName VARCHAR(255),
     Price REAL,
@@ -45,7 +45,7 @@ CREATE TABLE products(
     FOREIGN KEY (CategoryID) REFERENCES categories(CategoryID)
 );
 
-CREATE TABLE employes(
+CREATE TABLE IF NOT EXISTS employes(
     EmployeeID INTEGER NOT NULL,
     FirstName VARCHAR(50),
     MiddleInitial VARCHAR(1),
@@ -59,7 +59,7 @@ CREATE TABLE employes(
     FOREIGN KEY (CityID) REFERENCES cities(CityID)
 );
 
-CREATE TABLE sales(
+CREATE TABLE IF NOT EXISTS sales(
     SalesID INTEGER NOT NULL,
     SalesPersonID INTEGER NOT NULL,
     CustomerID INTEGER NOT NULL,
