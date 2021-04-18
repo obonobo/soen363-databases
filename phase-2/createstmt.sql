@@ -1,75 +1,76 @@
-CREATE TABLE movies_metadata(
-    id INTEGER NOT NULL,
-    adult BOOLEAN,
-    belongs_to_collection TEXT,
-    budget INTEGER,
-    genre VARCHAR,
-    homepage VARCHAR,
-    imdb_id VARCHAR,
-    original_language VARCHAR(2),
-    original_title TEXT,
-    overview VARCHAR,
-    popularity REAL,
-    poster_path VARCHAR,
-    production_companies VARCHAR,
-    release_date TIMESTAMP,
-    revenue INTEGER,
-    runtime INTEGER,
-    spoken_languages TEXT,
-    "status" VARCHAR,
-    tagline VARCHAR,
-    title VARCHAR,
-    video BOOLEAN,
-    vote_average REAL,
-    vote_count INTEGER,
-    PRIMARY KEY(id)
+CREATE TABLE countries(
+    CountryID INTEGER NOT NULL,
+    CountryName VARCHAR(50),
+    CountryCode VARCHAR(2),
+    PRIMARY KEY (CountryID)
 );
 
-CREATE TABLE keywords(
-    id INTEGER NOT NULL,
-    keywords VARCHAR,
-    PRIMARY KEY (id),
-    FOREIGN KEY (id) REFERENCES movies_metadata(id)
+CREATE TABLE cities(
+    CityID INTEGER NOT NULL,
+    CityName VARCHAR(50),
+    Zipcode INTEGER,
+    CountryID INTEGER NOT NULL,
+    PRIMARY KEY (CityName),
+    FOREIGN KEY (CountryID) REFERENCES countries(CountryID)
 );
 
-CREATE TABLE credits(
-    id INTEGER NOT NULL,
-    "cast" VARCHAR,
-    crew VARCHAR,
-    PRIMARY KEY (id),
-    FOREIGN KEY (id) REFERENCES movies_metadata(id)
+CREATE TABLE customer(
+    CustomerID INTEGER NOT NULL,
+    FirstName VARCHAR(50),
+    MiddleInitial VARCHAR(1),
+    LastName VARCHAR(50),
+    CityID INTEGER NOT NULL,
+    Address VARCHAR(255),
+    PRIMARY KEY (CustomerID),
+    FOREIGN KEY (CityID) REFERENCES cities(CityID)
 );
 
-CREATE TABLE ratings(
-    movieId INTEGER,
-    userId INTEGER,
-    rating REAL,
-    timestamp TIMESTAMP,
-    PRIMARY KEY (movieId, userId),
-    FOREIGN KEY (movieId) REFERENCES movies_metadata(id)
+CREATE TABLE categories(
+    CategoryID INTEGER NOT NULL,
+    CategoryName VARCHAR(50),
+    PRIMARY KEY (CategoryID)
 );
 
-CREATE TABLE ratings_small(
-    movieId INTEGER,
-    userId INTEGER,
-    rating REAL,
-    timestamp TIMESTAMP,
-    PRIMARY KEY (movieId, userId),
-    FOREIGN KEY (movieId) REFERENCES movies_metadata(id)
+CREATE TABLE products(
+    ProductID INTEGER NOT NULL,
+    ProductName VARCHAR(255),
+    Price REAL,
+    CategoryID INTEGER NOT NULL,
+    Class VARCHAR(50),
+    ModifyDate TIMESTAMP,
+    Resistant VARCHAR(20),
+    IsAllergic VARCHAR(10),
+    VitalityDays INTEGER,
+    PRIMARY KEY (ProductID),
+    FOREIGN KEY (CategoryID) REFERENCES categories(CategoryID)
 );
 
-CREATE TABLE links(
-    movieId INTEGER,
-    imdbId INTEGER,
-    tmdbId INTEGER,
-    PRIMARY KEY (movieId),
-    FOREIGN KEY (movieId) REFERENCES movies_metadata(id)
+CREATE TABLE employes(
+    EmployeeID INTEGER NOT NULL,
+    FirstName VARCHAR(50),
+    MiddleInitial VARCHAR(1),
+    LastName VARCHAR(50),
+    BirthDate TIMESTAMP,
+    Gender VARCHAR(1),
+    CityID INTEGER NOT NULL,
+    HireDate TIMESTAMP,
+    Address VARCHAR(255),
+    PRIMARY KEY (EmployeeID),
+    FOREIGN KEY (CityID) REFERENCES cities(CityID)
 );
 
-CREATE TABLE links_small(
-    movieId INTEGER,
-    imdbId INTEGER,
-    tmdbId INTEGER,
-    PRIMARY KEY (movieId),
-    FOREIGN KEY (movieId) REFERENCES movies_metadata(id)
+
+CREATE TABLE sales(
+    SalesID INTEGER NOT NULL,
+    SalesPersonID INTEGER NOT NULL,
+    CustomerID INTEGER NOT NULL,
+    ProductID INTEGER NOT NULL,
+    Quantity INTEGER,
+    Discount REAL,
+    SalesDate TIMESTAMP,
+    TransactionNumber VARCHAR(20),
+    PRIMARY KEY (SalesID),
+    FOREIGN KEY (SalesPersonID) REFERENCES employes(EmployeeID),
+    FOREIGN KEY (CustomerID) REFERENCES customer(CustomerID),
+    FOREIGN KEY (ProductID) REFERENCES products(ProductID)
 );
