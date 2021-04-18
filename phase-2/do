@@ -5,6 +5,16 @@
 # AUTHOR: @obonobo - Ethan Benabou - ethanbnb@gmail.com
 #
 
+replace_all_nulls() {
+    for file in *; do
+        sed  "s/'NULL'/NULL/g" "$file" > temp.sql && mv temp.sql "$file"
+    done
+}
+
+replace_nulls() {
+    sed  "s/'NULL'/NULL/g" "$1" > temp.sql && mv temp.sql "$1"
+}
+
 print_done() {
     echo -e "\033[0;32m done\033[0m"
 }
@@ -86,6 +96,7 @@ record_query() (
 
 main() {
     case $1 in
+        replace_nulls) replace_nulls ;;
         connect)    connect                         ;;
         connect_mongo) connect_mongo ;;
         convert)    convert                         ;;
