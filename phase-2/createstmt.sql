@@ -10,11 +10,11 @@ CREATE TABLE cities(
     CityName VARCHAR(50),
     Zipcode INTEGER,
     CountryID INTEGER NOT NULL,
-    PRIMARY KEY (CityName),
+    PRIMARY KEY (CityID),
     FOREIGN KEY (CountryID) REFERENCES countries(CountryID)
 );
 
-CREATE TABLE customer(
+CREATE TABLE customers(
     CustomerID INTEGER NOT NULL,
     FirstName VARCHAR(50),
     MiddleInitial VARCHAR(1),
@@ -71,6 +71,6 @@ CREATE TABLE sales(
     TransactionNumber VARCHAR(20),
     PRIMARY KEY (SalesID),
     FOREIGN KEY (SalesPersonID) REFERENCES employes(EmployeeID),
-    FOREIGN KEY (CustomerID) REFERENCES customer(CustomerID),
+    FOREIGN KEY (CustomerID) REFERENCES customers(CustomerID),
     FOREIGN KEY (ProductID) REFERENCES products(ProductID)
 );
