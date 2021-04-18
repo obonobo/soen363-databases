@@ -11,7 +11,15 @@ print_done() {
 
 # Convert all the .dat files in 'input' dir to .sql files in 'output' dir
 convert() (
-    ./preprosql
+    cd data
+    ../preprosql --out output/ \
+        Categories:./input/categories.csv \
+        Countries:./input/countries.csv \
+        Employees:./input/employes.csv \
+        Sales:./input/sales.csv \
+        Cities:./input/cities.csv \
+        Customers:./input/customers.csv \
+        Products:./input/products.csv
 )
 
 connect() {
@@ -20,6 +28,10 @@ connect() {
         --port 5555 \
         --user admin \
         --dbname=soen363 "$@"
+}
+
+connect_mongo() {
+    mongosh mongodb://admin:admin123@localhost:6666
 }
 
 start() {
@@ -46,10 +58,6 @@ execute_sql() {
 new() {
     docker-compose down
     docker-compose up -d
-}
-
-new_mongo() {
-
 }
 
 load_all_data() (
@@ -79,6 +87,7 @@ record_query() (
 main() {
     case $1 in
         connect)    connect                         ;;
+        connect_mongo) connect_mongo ;;
         convert)    convert                         ;;
         record)     record_query "$2"               ;;
         new)        new                             ;;
