@@ -52,9 +52,29 @@ connect() {
         --dbname=soen363 "$@"
 }
 
+
+# !!!!!!!!!!! MONGO !!!!!!!!!!!!!!!!!!!
+# !!!!!!!!!!! MONGO !!!!!!!!!!!!!!!!!!!
+# !!!!!!!!!!! MONGO !!!!!!!!!!!!!!!!!!!
+
+install_pre_reqs() {
+    sudo apt update -y \
+        && sudo apt upgrade -y \
+        && sudo apt install -y mongo-tools \
+        && wget https://downloads.mongodb.com/compass/mongosh_0.11.0_amd64.deb \
+        && sudo apt install -y ./mongosh*.deb \
+        && rm -f mongosh*.deb
+}
+
 connect_mongo() {
     mongosh mongodb://admin:admin123@localhost:6666
 }
+
+
+
+# !!!!!!!!!!! MONGO !!!!!!!!!!!!!!!!!!!
+# !!!!!!!!!!! MONGO !!!!!!!!!!!!!!!!!!!
+# !!!!!!!!!!! MONGO !!!!!!!!!!!!!!!!!!!
 
 start() {
     docker-compose start
@@ -96,18 +116,19 @@ record_query() (
 
 main() {
     case $1 in
-        replace_nulls) replace_nulls ;;
-        connect)    connect                         ;;
-        connect_mongo) connect_mongo ;;
-        convert)    convert                         ;;
-        record)     record_query "$2"               ;;
-        new)        new                             ;;
-        start)      start                           ;;
-        stop)       stop                            ;;
-        sql)        execute_sql "${@:2}"            ;;
-        all)        load_all_data                   ;;
-        build-all)  build_all                       ;;
-        *)          echo Command "$1" unrecognized  ;;
+        install_pre_reqs)   install_pre_reqs                ;;
+        replace_nulls)      replace_nulls                   ;;
+        connect)            connect                         ;;
+        connect_mongo)      connect_mongo                   ;;
+        convert)            convert                         ;;
+        record)             record_query "$2"               ;;
+        new)                new                             ;;
+        start)              start                           ;;
+        stop)               stop                            ;;
+        sql)                execute_sql "${@:2}"            ;;
+        all)                load_all_data                   ;;
+        build-all)          build_all                       ;;
+        *)                  echo Command "$1" unrecognized  ;;
     esac
 }
 
