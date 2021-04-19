@@ -125,8 +125,17 @@ create_collection() {
 
 # Use this method to create the collections needed
 create_collections() (
+    PROCS=()
     for col in "${!COLLECTIONS[@]}"; do
-        create_collection "$col" &
+        echo "Creating collection '$col' ..."
+        create_collection "$col" & > /dev/null &
+        PROCS+="$!"
+    done
+
+    echo -e "\n\nWaiting for all background processes..."
+    for proc in "${PROCS[@]}"; do
+        wait "$proc"
+        echo "Job '$proc' completed"
     done
 )
 
