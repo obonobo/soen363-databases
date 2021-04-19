@@ -17,7 +17,7 @@ CREATE TABLE cities(
 CREATE TABLE customers(
     CustomerID INTEGER NOT NULL,
     FirstName VARCHAR(50),
-    MiddleInitial VARCHAR(1),
+    MiddleInitial VARCHAR(4),
     LastName VARCHAR(50),
     CityID INTEGER NOT NULL,
     Address VARCHAR(255),
@@ -34,13 +34,14 @@ CREATE TABLE categories(
 CREATE TABLE products(
     ProductID INTEGER NOT NULL,
     ProductName VARCHAR(255),
-    Price REAL,
+    Price INTEGER,
+	"Temp" INTEGER,
     CategoryID INTEGER NOT NULL,
-    Class VARCHAR(50),
+    "Class" VARCHAR(50),
     ModifyDate TIMESTAMP,
     Resistant VARCHAR(20),
     IsAllergic VARCHAR(10),
-    VitalityDays INTEGER,
+    VitalityDays VARCHAR(4),
     PRIMARY KEY (ProductID),
     FOREIGN KEY (CategoryID) REFERENCES categories(CategoryID)
 );
@@ -54,7 +55,6 @@ CREATE TABLE employes(
     Gender VARCHAR(1),
     CityID INTEGER NOT NULL,
     HireDate TIMESTAMP,
-    Address VARCHAR(255),
     PRIMARY KEY (EmployeeID),
     FOREIGN KEY (CityID) REFERENCES cities(CityID)
 );
@@ -67,6 +67,8 @@ CREATE TABLE sales(
     ProductID INTEGER NOT NULL,
     Quantity INTEGER,
     Discount REAL,
+    TotalPrice INTEGER,
+    "Temp" INTEGER,
     SalesDate TIMESTAMP,
     TransactionNumber VARCHAR(20),
     PRIMARY KEY (SalesID),
@@ -74,3 +76,4 @@ CREATE TABLE sales(
     FOREIGN KEY (CustomerID) REFERENCES customers(CustomerID),
     FOREIGN KEY (ProductID) REFERENCES products(ProductID)
 );
+--drop temp and totalprice
