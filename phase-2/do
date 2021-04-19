@@ -57,6 +57,18 @@ connect() {
 # !!!!!!!!!!! MONGO !!!!!!!!!!!!!!!!!!!
 # !!!!!!!!!!! MONGO !!!!!!!!!!!!!!!!!!!
 
+# The MongoDB collection names that we will use
+declare -A COLLECTIONS
+COLLECTIONS=(
+    ['countries']='input/countries.csv'
+    ['cities']='input/cities.csv'
+    ['customers']='input/customers.csv'
+    ['categories']='input/categories.csv'
+    ['products']='input/products.fixed.csv'
+    ['employes']='input/employes.csv'
+    ['sales']='input/sales.fixed.csv'
+)
+
 install_pre_reqs() {
     sudo apt update -y \
         && sudo apt upgrade -y \
@@ -90,6 +102,26 @@ import_data_mongo() (
         --ignoreBlanks \
         --collection "$COLLECTION" \
         --file "$FILE"
+)
+
+import_all_data_files() {
+    for col in "${!COLLECTIONS[@]}"; do
+        import_data_mongo "$col" "${COLLECTIONS[$col]}"
+    done
+}
+
+create_collection() {
+    execute_query_mongo """
+        use soen363;
+        db.createCollection(\"$1\")
+    """
+}
+
+# Use this method to create the collections needed
+create_collections() (
+    for col in "${!COLLECTIONS[@]}"; do
+        create_collection "$col" &
+    done
 )
 
 
@@ -138,6 +170,8 @@ record_query() (
 
 main() {
     case $1 in
+        create_collection)  create_collection "$2"          ;;
+        create_collections) create_collections              ;;
         mongo)              execute_query_mongo "${@:2}"    ;;
         install_pre_reqs)   install_pre_reqs                ;;
         replace_nulls)      replace_nulls                   ;;
