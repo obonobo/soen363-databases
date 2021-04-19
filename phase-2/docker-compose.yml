@@ -34,7 +34,8 @@ services:
     restart: unless-stopped
 
   mongo:
-    image: mongo:latest
+    # image: mongo:latest
+    image: buttchuggg/soen363-phase-2-mongo:latest
     restart: unless-stopped
     networks:
       - main
