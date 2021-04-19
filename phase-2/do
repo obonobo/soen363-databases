@@ -70,6 +70,28 @@ connect_mongo() {
     mongosh mongodb://admin:admin123@localhost:6666
 }
 
+execute_query_mongo() {
+    echo "$1" | mongosh mongodb://admin:admin123@localhost:6666
+}
+
+# Usage: `import_data_mongo <collection> <input_file.csv>`
+import_data_mongo() (
+    COLLECTION="$1"
+    FILE="$2"
+    mongoimport \
+        --authenticationDatabase admin \
+        --username admin \
+        --password admin123 \
+        --host localhost \
+        --port 6666 \
+        --db soen363 \
+        --type csv \
+        --headerline \
+        --ignoreBlanks \
+        --collection "$COLLECTION" \
+        --file "$FILE"
+)
+
 
 
 # !!!!!!!!!!! MONGO !!!!!!!!!!!!!!!!!!!
@@ -116,6 +138,7 @@ record_query() (
 
 main() {
     case $1 in
+        mongo)              execute_query_mongo "${@:2}"    ;;
         install_pre_reqs)   install_pre_reqs                ;;
         replace_nulls)      replace_nulls                   ;;
         connect)            connect                         ;;
