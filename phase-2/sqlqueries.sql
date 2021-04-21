@@ -47,3 +47,6 @@ WHERE c.cityid = 32
 GROUP BY ca.categoryid 
 ORDER BY count(ca.categoryid) DESC
 
+-- A mongo query to return info for a product purchased in a certain month, its quantity, and how much discount was applied to it.
+-- Useful for tracking requirements for loyalty rewards in the future
+db.sales.find({$and: [{ ProductID : 47},{ Quantity : { $gt : 20 }}, {Discount:{$gte : 0.2}},{SalesDate:{$regex: '^2018-01'}}]})
