@@ -91,14 +91,6 @@ WHERE e.hiredate BETWEEN '2016-01-01 00:00:00' AND now()
 
 
 
-SELECT p.productname ,p.modifydate,p.vitalitydays,s.salesdate,DATEDIFF(D,DATE(p.modifydate),DATE(s.salesdate)) AS days
-FROM products p
-INNER JOIN sales s ON s.productid = p.productid 
-WHERE s.salesdate IS NOT NULL AND p.vitalitydays IS NOT NULL AND p.vitalitydays IS NOT NULL 
-LIMIT 5
-
-
-
 
 
 -- same but in mongo
