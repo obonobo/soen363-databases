@@ -45,10 +45,10 @@ GROUP BY ci.cityname
 ORDER BY count(s.salesid) DESC
 
 -- Displays whether an order is expired or good               (Justin)
-SELECT s.salesid,p.productname ,p.modifydate,p.vitalitydays,s.salesdate, (DATE_PART('day', s.salesdate- p.modifydate):: integer) as diff,
+SELECT s.salesid,p.productname ,p.modifydate,p.vitalitydays,s.salesdate, (DATE_PART('day', s.salesdate- p.modifydate):: integer) as daydiff,
 CASE WHEN s.salesdate > p.modifydate THEN 'Good'
 ELSE 'Expired'
-END AS EXPIRED
+END AS FOODSTATUS
 FROM products p
 INNER JOIN sales s ON s.productid = p.productid 
 WHERE s.salesdate IS NOT NULL AND p.vitalitydays IS NOT NULL AND p.vitalitydays IS NOT NULL 
