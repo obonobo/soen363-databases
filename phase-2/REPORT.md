@@ -223,17 +223,27 @@ GROUP BY ci.cityname
 ORDER BY count(s.salesid) DESC
 ```
 
-#### 5.
+#### 5. Which orders in our system are expired?
 
 ```sql
--- Displays whether an order is expired or good               (Justin)
-SELECT s.salesid,p.productname ,p.modifydate,s.salesdate, (DATE_PART('day', s.salesdate- p.modifydate):: integer)as daydiff,p.vitalitydays,
-CASE WHEN p.vitalitydays > (DATE_PART('day', s.salesdate- p.modifydate):: integer) THEN 'Good'
-ELSE 'Expired'
-END AS FOODSTATUS
+SELECT
+    s.salesid,
+    p.productname,
+    p.modifydate,
+    s.salesdate,
+    (DATE_PART('day', s.salesdate- p.modifydate):: integer) as daydiff,
+    p.vitalitydays,
+CASE
+    WHEN p.vitalitydays > (DATE_PART('day', s.salesdate- p.modifydate):: integer)
+    THEN 'Good'
+    ELSE 'Expired'
+    END AS FOODSTATUS
 FROM products p
 INNER JOIN sales s ON s.productid = p.productid
-WHERE s.salesdate IS NOT NULL AND p.vitalitydays IS NOT NULL AND p.vitalitydays IS NOT NULL AND (DATE_PART('day', s.salesdate- p.modifydate):: integer)>=0
+WHERE s.salesdate IS NOT NULL
+AND p.vitalitydays IS NOT NULL
+AND p.vitalitydays IS NOT NULL
+AND (DATE_PART('day', s.salesdate- p.modifydate):: integer) >= 0;
 ```
 
 #### 6.
