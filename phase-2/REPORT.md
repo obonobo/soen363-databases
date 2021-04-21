@@ -1,5 +1,12 @@
 # SOEN 363 - Phase-2
 
+## Team Members
+
+- Anthony Chraim 40091014
+- Ethan Benabou 40032543
+- Justin Loh 40073776
+- Mohamed Amine Kihal 40046046
+
 ## Q3 - BigData with SQL
 
 ### (a) - Dataset: Grocery Sales
@@ -20,17 +27,15 @@ are 7 files in total in the dataset:
 - `sales.csv`
 - **_TOTAL SIZE: `753.22MB`_**
 
+<div style="page-break-after: always;"></div>
+
 ### (b) - Creating the database: PostgreSQL
 
 #### **_DATABASE:_** `PostgreSQL v13.2`
 
-<br>
-
 #### **_ENTITY RELATION DIAGRAM (ERD):_**
 
 ![ERD](./assets/erd.png)
-
-<br />
 
 #### **_DATA DEFINITION (DDL):_**
 
@@ -153,6 +158,8 @@ into Postgres. All the scripts used for preprocessing and data cleaning have
 been included alongside this report. Check out the `scripts/` dir for the source
 code.
 
+<div style="page-break-after: always;"></div>
+
 ### (d) - Reports
 
 10 SQL queries were created to extract interesting pieces of information about
@@ -197,6 +204,8 @@ ORDER BY numsales DESC
 LIMIT 1;
 ```
 
+<div style="page-break-after: always;"></div>
+
 #### 3. What are the top-selling item categories in Tucson, Arizona?
 
 ```sql
@@ -223,6 +232,8 @@ WHERE p.productname like '%Chocolate%'
 GROUP BY ci.cityname
 ORDER BY COUNT(s.salesid) DESC;
 ```
+
+<div style="page-break-after: always;"></div>
 
 #### 5. Which orders in our system are expired?
 
@@ -270,6 +281,8 @@ ORDER BY COUNT(s.productid) DESC
 LIMIT 5;
 ```
 
+<div style="page-break-after: always;"></div>
+
 #### 8. Which employees are from the millenial generation?
 
 ```sql
@@ -309,6 +322,8 @@ processing time noticeably.
 ```sql
 CREATE INDEX sales_idx ON sales(quantity);
 ```
+
+<div style="page-break-after: always;"></div>
 
 ## Q4 - NoSQL Databases
 
@@ -422,6 +437,8 @@ db.sales.aggregate([
 ]);
 ```
 
+<div style="page-break-after: always;"></div>
+
 #### 2. What were the sales like for the product with ID 47 in January 2018?
 
 ```javascript
@@ -457,6 +474,8 @@ db.employes.find({
   ],
 });
 ```
+
+<div style="page-break-after: always;"></div>
 
 #### 4. What are the total number of items sold across the entire database?
 
@@ -504,6 +523,8 @@ db.products.aggregate([
 db.employes.find({ HireDate: { $gte: "2016-01-01 00:00:00.000" } });
 ```
 
+<div style="page-break-after: always;"></div>
+
 #### 8. What is the total price of all items sold across the entire database?
 
 ```javascript
@@ -534,6 +555,8 @@ db.sales.aggregate([
   },
 ]);
 ```
+
+<div style="page-break-after: always;"></div>
 
 #### 9. How many people were hired after 2016?
 
@@ -575,6 +598,8 @@ and all the other secondary nodes will copy it. Once every secondary node has
 copied it, the cluster will become available again. During the time that the
 secondary nodes are copying the new primary node, the system will be unavailable
 (few seconds).
+
+<div style="page-break-after: always;"></div>
 
 ### (g) - Indexing in MongoDB
 

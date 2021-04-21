@@ -1,0 +1,57 @@
+version: "3.8"
+services:
+  postgres:
+    # image: postgres:latest
+    image: obonobo/soen363-phase-2-postgres:latest
+    ports:
+      - 5555:5432
+    networks:
+      - main
+    environment:
+      POSTGRES_DB: soen363
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      PGDATA: /data
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  pgadmin:
+    depends_on:
+      - postgres
+    image: dpage/pgadmin4:latest
+    ports:
+      - 4444:3500
+    networks:
+      - main
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.org
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_LISTEN_PORT: 3500
+    restart: unless-stopped
+
+  mongo:
+    # image: mongo:latest
+    image: obonobo/soen363-phase-2-mongo:latest
+    restart: unless-stopped
+    networks:
+      - main
+    ports:
+      - 6666:27017
+    environment:
+      MONGO_INITDB_DATABASE: soen363
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+networks:
+  main:
+    name: soen363

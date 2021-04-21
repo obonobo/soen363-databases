@@ -1,0 +1,265 @@
+#!/bin/bash
+
+################################ SOEN 363 #####################################
+#
+# AUTHOR: @obonobo - Ethan Benabou - ethanbnb@gmail.com
+#
+
+populate_database() (
+    DIR=data/output
+    execute_sql create.pgsql
+    execute_sql "$DIR/INSERT_countries.sql"
+    execute_sql "$DIR/INSERT_cities.sql"
+    execute_sql "$DIR/INSERT_customers.sql"
+    execute_sql "$DIR/INSERT_categories.sql"
+    execute_sql "$DIR/INSERT_products.sql"
+    execute_sql "$DIR/INSERT_employes.sql"
+    execute_sql "$DIR/INSERT_sales.chunked.sql"
+)
+
+replace_all_nulls() {
+    for file in *; do
+        sed  "s/'NULL'/NULL/g" "$file" > temp.sql && mv temp.sql "$file"
+    done
+}
+
+replace_nulls() {
+    sed  "s/'NULL'/NULL/g" "$1" > temp.sql && mv temp.sql "$1"
+}
+
+print_done() {
+    echo -e "\033[0;32m done\033[0m"
+}
+
+# Convert all the .dat files in 'input' dir to .sql files in 'output' dir
+convert() (
+    cd data
+    ../preprosql --out output/ \
+        Categories:./input/categories.csv \
+        Countries:./input/countries.csv \
+        Employees:./input/employes.csv \
+        Sales:./input/sales.csv \
+        Cities:./input/cities.csv \
+        Customers:./input/customers.csv \
+        Products:./input/products.csv
+)
+
+connect() {
+    env PGPASSWORD=admin123 \
+        psql --host localhost \
+        --port 5555 \
+        --user admin \
+        --dbname=soen363 "$@"
+}
+
+
+# !!!!!!!!!!! MONGO !!!!!!!!!!!!!!!!!!!
+# !!!!!!!!!!! MONGO !!!!!!!!!!!!!!!!!!!
+# !!!!!!!!!!! MONGO !!!!!!!!!!!!!!!!!!!
+
+# The MongoDB collection names that we will use
+declare -A COLLECTIONS
+COLLECTIONS=(
+    ['countries']='input/countries.csv'
+    ['cities']='input/cities.csv'
+    ['customers']='input/customers.csv'
+    ['categories']='input/categories.csv'
+    ['products']='input/products.fixed.csv'
+    ['employes']='input/employes.csv'
+    ['sales']='input/sales.fixed.csv'
+)
+
+install_pre_reqs() {
+    sudo apt update -y \
+        && sudo apt upgrade -y \
+        && sudo apt install -y mongo-tools \
+        && wget https://downloads.mongodb.com/compass/mongosh_0.11.0_amd64.deb \
+        && sudo apt install -y ./mongosh*.deb \
+        && rm -f mongosh*.deb
+}
+
+connect_mongo() {
+    mongosh mongodb://admin:admin123@localhost:6666
+}
+
+execute_query_mongo() {
+    echo "$1" | mongosh mongodb://admin:admin123@localhost:6666
+}
+
+# Usage: `import_data_mongo <collection> <input_file.csv>`
+import_data_mongo() (
+    COLLECTION="$1"
+    FILE="$2"
+
+    echo "Importing file '$FILE' into collection: '$COLLECTION' ..."
+
+    mongoimport \
+        --authenticationDatabase admin \
+        --username admin \
+        --password admin123 \
+        --host localhost \
+        --port 6666 \
+        --db soen363 \
+        --type csv \
+        --headerline \
+        --ignoreBlanks \
+        --collection "$COLLECTION" \
+        --file "$FILE"
+
+    echo ''
+)
+
+import_all_data_files() {
+    echo -e "Importing all data files to mongodb...\n"
+    for col in "${!COLLECTIONS[@]}"; do
+        import_data_mongo "$col" "${COLLECTIONS[$col]}"
+    done
+}
+
+create_collection() {
+    execute_query_mongo """
+        use soen363;
+        db.createCollection(\"$1\")
+    """
+}
+
+# Use this method to create the collections needed
+create_collections() (
+    PROCS=()
+    for col in "${!COLLECTIONS[@]}"; do
+        echo "Creating collection '$col' ..."
+        create_collection "$col" & > /dev/null &
+        PROCS+="$!"
+    done
+
+    echo -e "\n\nWaiting for all background processes..."
+    for proc in "${PROCS[@]}"; do
+        wait "$proc"
+        echo "Job '$proc' completed"
+    done
+)
+
+# Changing the 'NULL' strings to mongo null values
+change_NULL_to_null() {
+    FILE="$1"
+
+    sed 's/NULL/null/g' "$FILE" \
+        > "TEMP_$(basename $FILE)" \
+        && mv "TEMP_$(basename $FILE)" "$FILE"
+}
+
+convert_null_all_files() {
+    for file in "${COLLECTIONS[@]}"; do
+        change_NULL_to_null "$file"
+    done
+}
+
+post_import_update_values_mongo() (
+    execute_query_mongo '''
+        use soen363;
+
+        // Fix sales
+        db.sales.updateMany(
+            { Discount: { $eq: "null" } },
+            { $set: { Discount: null } }
+        );
+
+        // Fix products - nulls
+        db.products.updateMany(
+            { IsAllergic: { $eq: "null" } },
+            { $set: { IsAllergic: null } }
+        );
+        db.products.updateMany(
+            { VitalityDays: { $eq: "null" } },
+            { $set: { VitalityDays: null } }
+        );
+        db.products.updateMany(
+            { Resistant: { $eq: "null" } },
+            { $set: { Resistant: null } }
+        );
+
+        // Fix products - true/false values
+        db.products.updateMany(
+            { IsAllergic: { $eq: "True" } },
+            { $set: { IsAllergic: true } }
+        );
+        db.products.updateMany(
+            { IsAllergic: { $eq: "False" } },
+            { $set: { IsAllergic: false } }
+        );
+    '''
+)
+
+build_all_mongo() {
+    create_collections
+    import_all_data_files
+    post_import_update_values_mongo
+}
+
+# !!!!!!!!!!! MONGO !!!!!!!!!!!!!!!!!!!
+# !!!!!!!!!!! MONGO !!!!!!!!!!!!!!!!!!!
+# !!!!!!!!!!! MONGO !!!!!!!!!!!!!!!!!!!
+
+start() {
+    docker-compose start
+}
+
+stop() {
+    docker-compose stop
+}
+
+# Executes a SQL file against the docker database
+execute_sql() {
+    if [[ -f  "$1" ]]; then
+        echo -e "Executing SQL file \033[0;34m${1}\033[0m ..."
+        connect -f "$1"
+    else
+        echo -e "Executing SQL command..."
+        connect -c "$*"
+    fi
+    ret=$?
+    return $ret
+}
+
+new() {
+    docker-compose down
+    docker-compose up -d
+}
+
+build_all() {
+    new \
+        && echo "Waiting 20s for postgres to start..." \
+        && sleep 20 \
+        && populate_database
+}
+
+record_query() (
+    save_as="RESULT_$(basename $1).log"
+    execute_sql $1 | head -n -1 | tail -n +2 | tee "$save_as"
+)
+
+main() {
+    case "$1" in
+        convert_null_all_files) convert_null_all_files              ;;
+        import_all_data_files)  import_all_data_files               ;;
+        create_collections)     create_collections                  ;;
+        create_collection)      create_collection "$2"              ;;
+        install_pre_reqs)       install_pre_reqs                    ;;
+        build_all_mongo)        build_all_mongo                     ;;
+        replace_nulls)          replace_nulls                       ;;
+        connect_mongo)          connect_mongo                       ;;
+        build-all)              build_all                           ;;
+        connect)                connect                             ;;
+        convert)                convert                             ;;
+        record)                 record_query "$2"                   ;;
+        mongo)                  execute_query_mongo "${@:2}"        ;;
+        start)                  start                               ;;
+        stop)                   stop                                ;;
+        new)                    new                                 ;;
+        sql)                    execute_sql "${@:2}"                ;;
+        all)                    load_all_data                       ;;
+        *)                      echo "Command '$1' unrecognized"    ;;
+    esac
+}
+
+[[ ${BASH_SOURCE} == $0 ]] && main $@
