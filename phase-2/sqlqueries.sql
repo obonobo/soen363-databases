@@ -5,18 +5,6 @@ WHERE discount in (SELECT distinct discount FROM sales
 ORDER BY discount DESC) OR discount is null
 GROUP BY discount;
 
--- same but in mongo
-
-db.sales.aggregate(
-    [
-        {
-            $group:{
-                _id: "$Discount",
-                avgAmount:{ $avg: "$Quantity"}
-            }
-        }
-     ]
-)
 
 
 --information of the employee who has sold the biggest amount of seafood.
@@ -35,17 +23,91 @@ LIMIT 1;
 
 
 
---Groups top selling to lowest selling categories for a given city id (Justin )
-
-SELECT ca.categoryid,ca.categoryname,count(ca.categoryid)
+--Groups top selling to lowest selling categories for a given city name (Justin)
+SELECT ca.categoryname,count(ca.categoryid)
 FROM customers cu  
 INNER JOIN sales s  ON cu.customerid = s.customerid 
 INNER JOIN cities c ON cu.cityid = c.cityid 
 INNER JOIN products p ON s.productid = p.productid 
 INNER JOIN categories ca ON p.categoryid = ca.categoryid
-WHERE c.cityid = 32 
-GROUP BY ca.categoryid 
+WHERE c.cityname = 'Tucson' 
+GROUP BY ca.categoryid
 ORDER BY count(ca.categoryid) DESC
+
+-- Displays amount of chocolate sales per city                  (Justin)
+SELECT count(s.salesid), ci.cityname
+FROM sales s
+INNER JOIN products p ON s.productid = p.productid 
+INNER JOIN customers c ON s.customerid = c.customerid 
+INNER JOIN cities ci on c.cityid = ci.cityid
+WHERE p.productname like '%Chocolate%'
+GROUP BY ci.cityname 
+ORDER BY count(s.salesid) DESC
+
+-- Displays amount of Garbage sales per city                (Justin)
+SELECT count(s.salesid), ci.cityname
+FROM sales s
+INNER JOIN products p ON s.productid = p.productid 
+INNER JOIN customers c ON s.customerid = c.customerid 
+INNER JOIN cities ci ON c.cityid = ci.cityid
+WHERE p.productname LIKE '%Garbage%'
+GROUP BY ci.cityname 
+ORDER BY count(s.salesid) DESC
+
+--DIsplays amount of customers per city , highest to lowest         (Justin)
+SELECT count(c.cityid),c.cityid, ci.cityname
+FROM customers c 
+INNER JOIN cities ci ON c.cityid = ci.cityid
+GROUP BY c.cityid,ci.cityname 
+ORDER BY count(c.customerid) DESC
+
+
+--Top 5 people to have made the most wine purchases         (Justin)
+SELECT count(s.productid), c.firstname ,c.middleinitial, c.lastname
+FROM sales s
+INNER JOIN products p ON s.productid = p.productid 
+INNER JOIN customers c ON s.customerid = c.customerid 
+WHERE p.productname like '%Wine%'
+GROUP BY s.productid,c.firstname,c.middleinitial, c.lastname
+ORDER BY count(s.productid) DESC
+LIMIT 5
+
+
+--Millennial Employees                                       (Justin)
+SELECT * 
+FROM employes e
+WHERE e.birthdate BETWEEN '1981-01-01 00:00:00' AND '1996-12-31 23:59:59'
+
+--Gen x Employees                                             (Justin)
+SELECT * 
+FROM employes e
+WHERE e.birthdate BETWEEN '1965-01-01 00:00:00' AND '1980-12-31 23:59:59'
+
+-- Employees hired after 2016 till the current date             (Justin)
+SELECT * 
+FROM employes e
+WHERE e.hiredate BETWEEN '2016-01-01 00:00:00' AND now()
+
+
+
+
+
+
+
+
+-- same but in mongo
+
+db.sales.aggregate(
+    [
+        {
+            $group:{
+                _id: "$Discount",
+                avgAmount:{ $avg: "$Quantity"}
+            }
+        }
+     ]
+)
+
 
 -- A mongo query to return info for a product purchased in a certain month, its quantity, and how much discount was applied to it.
 -- Useful for tracking requirements for loyalty rewards in the future
