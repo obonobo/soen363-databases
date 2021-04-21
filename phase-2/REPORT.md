@@ -362,22 +362,36 @@ db.employes.find({
 });
 ```
 
-#### 4.
+#### 4. What are the total number of items sold across the entire database?
 
 ```javascript
-
+db.sales.aggregate([
+  {
+    $group: {
+      _id: null,
+      totalAmount: { $sum: "$Quantity" },
+      count: { $sum: 1 },
+    },
+  },
+]);
 ```
 
-#### 5.
+#### 5. How many items are that people are allergic to?
 
 ```javascript
-
+db.products.countDocuments({
+  IsAllergic: true,
+});
 ```
 
-#### 6.
+#### 6. What is the average price of tea?
 
 ```javascript
-
+db.products.aggregate([
+  $match: {
+    Price: { $regex: ".*[Tt][Ee][aA].*" },
+  },
+]);
 ```
 
 #### 7.

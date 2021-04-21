@@ -94,7 +94,6 @@ WHERE e.hiredate BETWEEN '2016-01-01 00:00:00' AND now()
 
 
 -- same but in mongo
-
 db.sales.aggregate(
     [
         {
@@ -106,11 +105,9 @@ db.sales.aggregate(
      ]
 )
 
-
 -- A mongo query to return info for a product purchased in a certain month, its quantity, and how much discount was applied to it.
 -- Useful for tracking requirements for loyalty rewards in the future
 db.sales.find({$and: [{ ProductID : 47},{ Quantity : { $gt : 20 }}, {Discount:{$gte : 0.2}},{SalesDate:{$regex: '^2018-01'}}]})
-
 
 --all male employees that have been hired after 2000 and are originally from baltimore
 var output = []
