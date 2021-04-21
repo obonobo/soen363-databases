@@ -44,15 +44,16 @@ WHERE p.productname like '%Chocolate%'
 GROUP BY ci.cityname 
 ORDER BY count(s.salesid) DESC
 
--- Displays amount of Garbage sales per city                (Justin)
-SELECT count(s.salesid), ci.cityname
-FROM sales s
-INNER JOIN products p ON s.productid = p.productid 
-INNER JOIN customers c ON s.customerid = c.customerid 
-INNER JOIN cities ci ON c.cityid = ci.cityid
-WHERE p.productname LIKE '%Garbage%'
-GROUP BY ci.cityname 
-ORDER BY count(s.salesid) DESC
+-- Displays whether an order is expired or good               (Justin)
+SELECT s.salesid,p.productname ,p.modifydate,p.vitalitydays,s.salesdate, (DATE_PART('day', s.salesdate- p.modifydate):: integer) as diff,
+CASE WHEN s.salesdate > p.modifydate THEN 'Good'
+ELSE 'Expired'
+END AS EXPIRED
+FROM products p
+INNER JOIN sales s ON s.productid = p.productid 
+WHERE s.salesdate IS NOT NULL AND p.vitalitydays IS NOT NULL AND p.vitalitydays IS NOT NULL 
+LIMIT 20
+
 
 --DIsplays amount of customers per city , highest to lowest         (Justin)
 SELECT count(c.cityid),c.cityid, ci.cityname
@@ -90,6 +91,11 @@ WHERE e.hiredate BETWEEN '2016-01-01 00:00:00' AND now()
 
 
 
+SELECT p.productname ,p.modifydate,p.vitalitydays,s.salesdate,DATEDIFF(D,DATE(p.modifydate),DATE(s.salesdate)) AS days
+FROM products p
+INNER JOIN sales s ON s.productid = p.productid 
+WHERE s.salesdate IS NOT NULL AND p.vitalitydays IS NOT NULL AND p.vitalitydays IS NOT NULL 
+LIMIT 5
 
 
 
