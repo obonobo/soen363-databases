@@ -166,9 +166,9 @@ on average, tend to have higher sales.
 ```sql
 SELECT discount, AVG(quantity) FROM Sales
 WHERE discount IN (
-  SELECT distinct discount
-  FROM Sales
-  ORDER BY discount DESC)
+    SELECT distinct discount
+    FROM Sales
+    ORDER BY discount DESC)
 OR discount IS NULL
 GROUP BY discount;
 ```
@@ -210,7 +210,7 @@ GROUP BY ca.categoryid
 ORDER BY COUNT(ca.categoryid) DESC;
 ```
 
-#### 4. How much money does each US city spend on chocolate?
+#### 4. How many sales of chocalate does each city purchase?
 
 ```sql
 SELECT COUNT(s.salesid), ci.cityname
@@ -441,8 +441,13 @@ db.sales.aggregate([
 
 #### 9. How many people were hired after 2016?
 
-```javascript
+<!-- ```javascript
 db.employes.find({ HireDate: { $gte: "2016-01-01 00:00:00.000" } }).count();
+``` -->
+
+```javascript
+var pastas = db.products.find({ ProductName: { $regex: "%Pasta%" } });
+db.sales.find({ ProductID: { $in: pastas } }).count();
 ```
 
 #### 10. How many women were hired since 2016?
@@ -457,10 +462,50 @@ db.females
   .count();
 ```
 
-### (f)
+### (f) - Investigate the balance between the consistency and the availability in your NoSQL system
+
+The CAP theorem states that a distributed system cannot be simultaneously
+consistent, available and have partition tolerance. Consistency happens when all
+the clients either receive the most recent read, or an error. Availability
+happens when the client always gets a response when it requests for data
+(without necessarily having to be consistent). Partition tolerance is when the
+cluster continues to work no matter the number of messages that are dropped by
+the network. In the case of mongoDB, the system resolves partitions and
+maintains consistency, but it compromises on availability. The client only has
+one primary node that receives the all of the writes. Every other node
+(secondary nodes) will just copy it and apply the changes to their own datasets.
+When the primary node becomes unavailable, a secondary node will take its place
+and all the other secondary nodes will copy it. Once every secondary node has
+copied it, the cluster will become available again. During the time that the
+secondary nodes are copying the new primary node, the system will be unavailable
+(few seconds).
+
+### (g) - Indexing in MongoDB
+
+When you are dealing with Big Data, any ineffeciencies in the execution of your
+queries will be very costly. That is why it's very important that your queries
+are optimized, and that you choose a good indexing strategy. MongoDB supports
+the creation of indexes on your document collections. This enables the efficient
+execution of queries against the database. If you neglect to add indexes on
+important fields in your collection, then MongoDB will have to perform a costly
+_collection scan_, in which is sequentially checks every document in the
+collection to find what you are looking for.
+
+In general, indexing in MongoDB works similarly to indexing in relational
+database; a B-tree data structure is used, and you get an index by default on
+the `_id` field (which is the MongoDB reserved primary key for all collections),
+but you can also create custom indexes using Mongo's JavaScript based query
+language.
+
+So let's examine how an index is created in MongoDB. Here is an example of how
+an index would be created on the `Quantity` field of the `sales` collection:
 
 ```javascript
+use soen363;  // Switch our demo database
 
+// Create a descending index on the `Quantity` field
+db.sales.createIndex({ Quantity: -1 });
 ```
 
-### (g)
+Note the use of `-1` makes the index a _descending_ index, but this is only
+important for a compound index.
