@@ -95,8 +95,13 @@ FROM employes e
 WHERE e.hiredate BETWEEN '2016-01-01 00:00:00' AND now()
 
 -- Mongo version of Employees hired after 2016 till the current date             (Justin)
-db.employes.find({HireDate: {$gte : "2016-01-01 00:00:00.000"}})
+db.employes.find({HireDate: {$gte : "2016-01-01 00:00:00.000"}}).count()
 
+
+
+-- Female employees hired since 2016                                        (Justin)
+var males = db.employes.find({Gender: "F"})
+db.males.find( {EmployeeID : {$in : males }},{HireDate: {$gte : "2016-01-01 00:00:00.000"}});
 
 
 -- same but in mongo
