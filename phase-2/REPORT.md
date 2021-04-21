@@ -167,7 +167,7 @@ on average, tend to have higher sales.
 ```sql
 SELECT discount, AVG(quantity) FROM Sales
 WHERE discount IN (
-    SELECT distinct discount
+    SELECT DISTINCT discount
     FROM Sales
     ORDER BY discount DESC)
 OR discount IS NULL
@@ -312,17 +312,104 @@ CREATE INDEX sales_idx ON sales(quantity);
 
 ## Q4 - NoSQL Databases
 
-### (a)
+### (a) - Dataset: Grocery Sales
 
-### (b)
+**_We used the same dataset as for the SQL database_**
 
-### (c)
+**_You can find the data on Kaggle, at the following address:
+<https://www.kaggle.com/codemysteries/salesdb>_**
+
+The data set that was chosen is a reasonably sized sales dataset for groceries
+sold in various cities throughout the entire United States of America. There
+are 7 files in total in the dataset:
+
+- `categories.csv`
+- `cities.csv`
+- `countries.csv`
+- `customers.csv`
+- `employes.csv`
+- `products.csv`
+- `sales.csv`
+- **_TOTAL SIZE: `753.22MB`_**
+
+### (b) - Modeling data as JSON documents
+
+Using the same CSV files as with PostgreSQL, each row of data was modeled as a
+MongoDB document - which is a JSON data structure of key-value pairs.
+
+For example, a sales record that looks like:
+
+```csv
+1,6,27039,381,7,NULL,0.00,2018-02-05 07:38:25.430,FQL4S94E4ME1EZFTG42G
+```
+
+becomes:
+
+```json
+{
+  "SalesID": 1,
+  "SalesPersonID": 6,
+  "CustomerID": 27039,
+  "ProductID": 381,
+  "Quantity": 7,
+  "Discount": null,
+  "TotalPrice": 0,
+  "SalesDate": "2018-02-05 07:38:25.430",
+  "TransactionNumber": "FQL4S94E4ME1EZFTG42G"
+}
+```
+
+Frankly, the data is much more suited to a tabular format like CSV or SQL
+tables; in a real application scenario, a CSV dataset would more suitably be
+imported into a relational database. There is not much to gain from using an
+unstructured format like JSON on structured and tabular data.
+
+### (c) - Creating a NoSQL database
+
+Here is one area where NoSQL is more convenient, but at a cost. MongoDB will let
+you create a database and database collections without defining a schema for
+your records. In other words, a schema-less MongoDB collection will allow the
+database operator to insert records of any shape, with no complaints. In this
+case, no schema was defined for the collections used in the assignment. Another
+difference in the MongoDB design is that records must be inserted into a
+collection in order for the collection
 
 ### (d)
 
+**_Docker Image:_**
+<https://hub.docker.com/repository/docker/obonobo/soen363-phase-2-mongo>
+
+For reproducability, a Docker image was created containing MongoDB. All
+the data has been preloaded into the Docker image. You can pull the image and
+examine the database by executing the following in your terminal (requires
+`docker` to be installed):
+
+```bash
+# Pull the latest docker image
+docker pull obonobo/soen363-phase-2-mongo:latest
+
+# Spin up an instance of postgres
+docker run -d \
+    -p 5432:5432 \
+    -e PGDATA=/data \
+    -e POSTGRES_DB=soen363 \
+    -e POSTGRES_USER=admin \
+    -e POSTGRES_PASSWORD=admin123 \
+    obonobo/soen363-phase-2-mongo:latest
+```
+
+Alternatively, you can use the `docker-compose.yml` file packaged alongside this
+report. This will spin up 3 containers (PostgreSQL, PGAdmin, MongoDB):
+`docker-compose up -d`
+
+The data required a few steps of processing before it was successfully loaded
+into Postgres. All the scripts used for preprocessing and data cleaning have
+been included alongside this report. Check out the `scripts/` dir for the source
+code.
+
 ### (e)
 
-#### 1.
+#### 1. How much do discounts effect sales?
 
 ```javascript
 db.sales.aggregate([
