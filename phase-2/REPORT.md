@@ -388,28 +388,61 @@ db.products.countDocuments({
 
 ```javascript
 db.products.aggregate([
-  $match: {
-    Price: { $regex: ".*[Tt][Ee][aA].*" },
+  {
+    $match: {
+      ProductName: { $regex: ".*[Tt][Ee][aA].*" },
+    },
+  },
+  {
+    $group: {
+      _id: null,
+      average: { $avg: "$Price" },
+    },
   },
 ]);
 ```
 
-#### 7.
+#### 7. Which employees did we hire after 2016?
 
 ```javascript
-
+db.employes.find({ HireDate: { $gte: "2016-01-01 00:00:00.000" } });
 ```
 
-#### 8.
+#### 8. What is the total price of all items sold across the entire database?
 
 ```javascript
-
+db.sales.aggregate([
+  {
+    $lookup: {
+      from: "products",
+      localField: "ProductID",
+      foreignField: "ProductID",
+      as: "products",
+    },
+  },
+  {
+    $project: {
+      product: { $first: "$products" },
+    },
+  },
+  {
+    $project: {
+      total: { $multiply: ["$Quantity", "$product.Price"] },
+    },
+  },
+  {
+    $group: {
+      _id: null,
+      sum: { $sum: "$total" },
+    },
+  },
+]);
 ```
 
 #### 9.
 
 ```javascript
-
+db.employes.find({ HireDate: { $gte: "2016-01-01 00:00:00.000" } }).count();
 ```
 
 #### 10.
