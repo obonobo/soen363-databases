@@ -34,6 +34,7 @@ WHERE c.cityname = 'Tucson'
 GROUP BY ca.categoryid
 ORDER BY count(ca.categoryid) DESC
 
+
 -- Displays amount of chocolate sales per city                  (Justin)
 SELECT count(s.salesid), ci.cityname
 FROM sales s
@@ -110,3 +111,15 @@ db.sales.aggregate(
 -- A mongo query to return info for a product purchased in a certain month, its quantity, and how much discount was applied to it.
 -- Useful for tracking requirements for loyalty rewards in the future
 db.sales.find({$and: [{ ProductID : 47},{ Quantity : { $gt : 20 }}, {Discount:{$gte : 0.2}},{SalesDate:{$regex: '^2018-01'}}]})
+
+
+--all male employees that have been hired after 2000 and are originally from baltimore
+var output = []
+db.cities.find({CityName: "Baltimore"}).forEach(function(document) {output.push(document.CountryID) })
+db.employes.find({
+    "$and":[
+        {HireDate: {$gte : "2000-01-13 00:00:00.000"}},
+        {Gender: "M"},
+        {CityID: {$in: output}}
+    ]
+})
