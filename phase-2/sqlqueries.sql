@@ -5,6 +5,20 @@ WHERE discount in (SELECT distinct discount FROM sales
 ORDER BY discount DESC) OR discount is null
 GROUP BY discount;
 
+-- same but in mongo
+
+db.sales.aggregate(
+    [
+        {
+            $group:{
+                _id: "$Discount",
+                avgAmount:{ $avg: "$Quantity"}
+            }
+        }
+     ]
+)
+
+
 --information of the employee who has sold the biggest amount of seafood.
 
 SELECT count(*) AS numsales, firstname, lastname, birthdate, cityname, zipcode, countryname
@@ -20,6 +34,7 @@ ORDER BY numsales DESC
 LIMIT 1;
 
 
+
 --Groups top selling to lowest selling categories for a given city id (Justin )
 
 SELECT ca.categoryid,ca.categoryname,count(ca.categoryid)
@@ -31,3 +46,4 @@ INNER JOIN categories ca ON p.categoryid = ca.categoryid
 WHERE c.cityid = 32 
 GROUP BY ca.categoryid 
 ORDER BY count(ca.categoryid) DESC
+
