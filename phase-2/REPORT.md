@@ -122,7 +122,8 @@ CREATE TABLE Sales (
 
 ### (c) - Loading the data
 
-**_Docker Image:_** <https://hub.docker.com/repository/docker/obonobo/soen363-phase-2-postgres>
+**_Docker Image:_**
+<https://hub.docker.com/repository/docker/obonobo/soen363-phase-2-postgres>
 
 For reproducability, a Docker image was created containing PostgreSQL v13.2. All
 the data has been preloaded into the Docker image. You can pull the image and
@@ -300,6 +301,14 @@ WHERE e.hiredate
 ```
 
 ### (e)
+
+Sales table is the enormous table of all. Its quantities are searched frequently
+for market analysis. Creating the sales quantity index will speeds up the
+processing time noticeably.
+
+```sql
+CREATE INDEX sales_idx ON sales(quantity);
+```
 
 ## Q4 - NoSQL Databases
 
@@ -488,10 +497,10 @@ are optimized, and that you choose a good indexing strategy. MongoDB supports
 the creation of indexes on your document collections. This enables the efficient
 execution of queries against the database. If you neglect to add indexes on
 important fields in your collection, then MongoDB will have to perform a costly
-_collection scan_, in which is sequentially checks every document in the
+_collection scan_, in which it sequentially checks every document in the
 collection to find what you are looking for.
 
-In general, indexing in MongoDB works similarly to indexing in relational
+In general, indexing in MongoDB works similarly to indexing in a relational
 database; a B-tree data structure is used, and you get an index by default on
 the `_id` field (which is the MongoDB reserved primary key for all collections),
 but you can also create custom indexes using Mongo's JavaScript based query
