@@ -47,3 +47,14 @@ WHERE c.cityid = 32
 GROUP BY ca.categoryid 
 ORDER BY count(ca.categoryid) DESC
 
+--all male employees that have been hired after 2000 and are originally from baltimore
+
+var output = []
+db.cities.find({CityName: "Baltimore"}).forEach(function(document) {output.push(document.CountryID) })
+db.employes.find({
+    "$and":[
+        {HireDate: {$gte : "2000-01-13 00:00:00.000"}},
+        {Gender: "M"},
+        {CityID: {$in: output}}
+    ]
+})
