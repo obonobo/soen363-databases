@@ -2,7 +2,7 @@ version: "3.8"
 services:
   postgres:
     # image: postgres:latest
-    image: buttchuggg/soen363-phase-2-postgres:latest
+    image: obonobo/soen363-phase-2-postgres:latest
     ports:
       - 5555:5432
     networks:
@@ -35,7 +35,7 @@ services:
 
   mongo:
     # image: mongo:latest
-    image: buttchuggg/soen363-phase-2-mongo:latest
+    image: obonobo/soen363-phase-2-mongo:latest
     restart: unless-stopped
     networks:
       - main
