@@ -177,19 +177,19 @@ GROUP BY discount;
 
 ```sql
 SELECT
-  count(*) AS numsales,
-  firstname,
-  lastname,
-  birthdate,
-  cityname,
-  zipcode,
-  countryname
+    count(*) AS numsales,
+    firstname,
+    lastname,
+    birthdate,
+    cityname,
+    zipcode,
+    countryname
 FROM Sales s
-INNER JOIN products p ON s.productid = p.productid
-INNER JOIN categories c ON p.categoryid = c.categoryid
-INNER JOIN employes e ON s.salespersonid = e.employeeid
-INNER JOIN cities ci ON e.cityid = ci.cityid
-INNER JOIN countries co ON ci.countryid = co.countryid
+    INNER JOIN products p ON s.productid = p.productid
+    INNER JOIN categories c ON p.categoryid = c.categoryid
+    INNER JOIN employes e ON s.salespersonid = e.employeeid
+    INNER JOIN cities ci ON e.cityid = ci.cityid
+    INNER JOIN countries co ON ci.countryid = co.countryid
 WHERE categoryname = 'Seafood'
 GROUP BY firstname, lastname, birthdate, cityname, zipcode, countryname
 ORDER BY numsales DESC
@@ -199,30 +199,94 @@ LIMIT 1;
 #### 3. What are the top-selling item categories in Tucson, Arizona?
 
 ```sql
-SELECT ca.categoryname,count(ca.categoryid)
+SELECT ca.categoryname, COUNT(ca.categoryid)
 FROM customers cu
-INNER JOIN sales s  ON cu.customerid = s.customerid
-INNER JOIN cities c ON cu.cityid = c.cityid
-INNER JOIN products p ON s.productid = p.productid
-INNER JOIN categories ca ON p.categoryid = ca.categoryid
+    INNER JOIN sales s  ON cu.customerid = s.customerid
+    INNER JOIN cities c ON cu.cityid = c.cityid
+    INNER JOIN products p ON s.productid = p.productid
+    INNER JOIN categories ca ON p.categoryid = ca.categoryid
 WHERE c.cityname = 'Tucson'
 GROUP BY ca.categoryid
-ORDER BY count(ca.categoryid) DESC
+ORDER BY COUNT(ca.categoryid) DESC;
 ```
 
-#### 4.
+#### 4. How much money does each US city spend on chocolate?
+
+```sql
+SELECT count(s.salesid), ci.cityname
+FROM sales s
+INNER JOIN products p ON s.productid = p.productid
+INNER JOIN customers c ON s.customerid = c.customerid
+INNER JOIN cities ci on c.cityid = ci.cityid
+WHERE p.productname like '%Chocolate%'
+GROUP BY ci.cityname
+ORDER BY count(s.salesid) DESC
+```
 
 #### 5.
 
+```sql
+-- Displays whether an order is expired or good               (Justin)
+SELECT s.salesid,p.productname ,p.modifydate,s.salesdate, (DATE_PART('day', s.salesdate- p.modifydate):: integer)as daydiff,p.vitalitydays,
+CASE WHEN p.vitalitydays > (DATE_PART('day', s.salesdate- p.modifydate):: integer) THEN 'Good'
+ELSE 'Expired'
+END AS FOODSTATUS
+FROM products p
+INNER JOIN sales s ON s.productid = p.productid
+WHERE s.salesdate IS NOT NULL AND p.vitalitydays IS NOT NULL AND p.vitalitydays IS NOT NULL AND (DATE_PART('day', s.salesdate- p.modifydate):: integer)>=0
+```
+
 #### 6.
+
+```sql
+--DIsplays amount of customers per city , highest to lowest         (Justin)
+SELECT count(c.cityid),c.cityid, ci.cityname
+FROM customers c
+INNER JOIN cities ci ON c.cityid = ci.cityid
+GROUP BY c.cityid,ci.cityname
+ORDER BY count(c.customerid) DESC
+```
 
 #### 7.
 
+```sql
+--Top 5 people to have made the most wine purchases         (Justin)
+SELECT count(s.productid), c.firstname ,c.middleinitial, c.lastname
+FROM sales s
+INNER JOIN products p ON s.productid = p.productid
+INNER JOIN customers c ON s.customerid = c.customerid
+WHERE p.productname like '%Wine%'
+GROUP BY s.productid,c.firstname,c.middleinitial, c.lastname
+ORDER BY count(s.productid) DESC
+LIMIT 5
+```
+
 #### 8.
+
+```sql
+--Millennial Employees                                       (Justin)
+SELECT *
+FROM employes e
+WHERE e.birthdate BETWEEN '1981-01-01 00:00:00' AND '1996-12-31 23:59:59'
+```
 
 #### 9.
 
+```sql
+--Gen x Employees                                             (Justin)
+SELECT *
+FROM employes e
+WHERE e.birthdate BETWEEN '1965-01-01 00:00:00' AND '1980-12-31 23:59:59'
+```
+
 #### 10.
+
+```sql
+-- Employees hired after 2016 till the current date             (Justin)
+SELECT *
+FROM employes e
+WHERE e.hiredate BETWEEN '2016-01-01 00:00:00' AND now()
+```
 
 ### (e)
 
