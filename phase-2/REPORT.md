@@ -439,16 +439,22 @@ db.sales.aggregate([
 ]);
 ```
 
-#### 9.
+#### 9. How many people were hired after 2016?
 
 ```javascript
 db.employes.find({ HireDate: { $gte: "2016-01-01 00:00:00.000" } }).count();
 ```
 
-#### 10.
+#### 10. How many women were hired since 2016?
 
 ```javascript
-
+var females = db.employes.find({ Gender: "F" });
+db.females
+  .find(
+    { EmployeeID: { $in: females } },
+    { HireDate: { $gte: "2016-01-01 00:00:00.000" } }
+  )
+  .count();
 ```
 
 ### (f)
