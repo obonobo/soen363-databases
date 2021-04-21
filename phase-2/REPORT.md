@@ -315,24 +315,99 @@ WHERE e.hiredate
 
 #### 1.
 
-#### 2.
+```javascript
+db.sales.aggregate([
+  {
+    $group: {
+      _id: "$Discount",
+      avgAmount: { $avg: "$Quantity" },
+    },
+  },
+]);
+```
 
-#### 3.
+#### 2. What were the sales like for the product with ID 47 in January 2018?
+
+```javascript
+// A mongo query to return info for a product purchased in a certain month, its quantity, and how much discount was applied to it.
+// Useful for tracking requirements for loyalty rewards in the future
+db.sales.find({
+  $and: [
+    { ProductID: 47 },
+    { Quantity: { $gt: 20 } },
+    { Discount: { $gte: 0.2 } },
+    { SalesDate: { $regex: "^2018-01" } },
+  ],
+});
+```
+
+#### 3. Who are all the male employees that have been hired after 2000 and are originally from baltimore?
+
+<!-- prettier-ignore -->
+```javascript
+var output = [];
+
+db.cities
+  .find({ CityName: "Baltimore" })
+  .forEach((document) => {
+    output.push(document.CountryID);
+  });
+
+db.employes.find({
+  $and: [
+    { HireDate: { $gte: "2000-01-13 00:00:00.000" } },
+    { Gender: "M" },
+    { CityID: { $in: output } },
+  ],
+});
+```
 
 #### 4.
 
+```javascript
+
+```
+
 #### 5.
+
+```javascript
+
+```
 
 #### 6.
 
+```javascript
+
+```
+
 #### 7.
+
+```javascript
+
+```
 
 #### 8.
 
+```javascript
+
+```
+
 #### 9.
+
+```javascript
+
+```
 
 #### 10.
 
+```javascript
+
+```
+
 ### (f)
+
+```javascript
+
+```
 
 ### (g)
