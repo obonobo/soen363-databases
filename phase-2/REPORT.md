@@ -177,7 +177,7 @@ GROUP BY discount;
 
 ```sql
 SELECT
-    count(*) AS numsales,
+    COUNT(*) AS numsales,
     firstname,
     lastname,
     birthdate,
@@ -213,14 +213,14 @@ ORDER BY COUNT(ca.categoryid) DESC;
 #### 4. How much money does each US city spend on chocolate?
 
 ```sql
-SELECT count(s.salesid), ci.cityname
+SELECT COUNT(s.salesid), ci.cityname
 FROM sales s
 INNER JOIN products p ON s.productid = p.productid
 INNER JOIN customers c ON s.customerid = c.customerid
 INNER JOIN cities ci on c.cityid = ci.cityid
 WHERE p.productname like '%Chocolate%'
 GROUP BY ci.cityname
-ORDER BY count(s.salesid) DESC
+ORDER BY COUNT(s.salesid) DESC;
 ```
 
 #### 5. Which orders in our system are expired?
@@ -246,56 +246,57 @@ AND p.vitalitydays IS NOT NULL
 AND (DATE_PART('day', s.salesdate- p.modifydate):: integer) >= 0;
 ```
 
-#### 6.
+#### 6. How many customers does each city have?
 
 ```sql
---DIsplays amount of customers per city , highest to lowest         (Justin)
-SELECT count(c.cityid),c.cityid, ci.cityname
+SELECT COUNT(c.cityid), c.cityid, ci.cityname
 FROM customers c
 INNER JOIN cities ci ON c.cityid = ci.cityid
-GROUP BY c.cityid,ci.cityname
-ORDER BY count(c.customerid) DESC
+GROUP BY c.cityid, ci.cityname
+ORDER BY COUNT(c.customerid) DESC;
 ```
 
-#### 7.
+#### 7. Who are the top 5 people who purchased the most wine?
 
 ```sql
---Top 5 people to have made the most wine purchases         (Justin)
-SELECT count(s.productid), c.firstname ,c.middleinitial, c.lastname
+SELECT COUNT(s.productid), c.firstname ,c.middleinitial, c.lastname
 FROM sales s
 INNER JOIN products p ON s.productid = p.productid
 INNER JOIN customers c ON s.customerid = c.customerid
 WHERE p.productname like '%Wine%'
 GROUP BY s.productid,c.firstname,c.middleinitial, c.lastname
-ORDER BY count(s.productid) DESC
-LIMIT 5
+ORDER BY COUNT(s.productid) DESC
+LIMIT 5;
 ```
 
-#### 8.
+#### 8. Which employees are from the millenial generation?
 
 ```sql
---Millennial Employees                                       (Justin)
 SELECT *
 FROM employes e
-WHERE e.birthdate BETWEEN '1981-01-01 00:00:00' AND '1996-12-31 23:59:59'
+WHERE e.birthdate
+    BETWEEN '1981-01-01 00:00:00'
+    AND '1996-12-31 23:59:59';
 ```
 
-#### 9.
+#### 9. Which employees are from the Gen X generation?
 
 ```sql
---Gen x Employees                                             (Justin)
 SELECT *
 FROM employes e
-WHERE e.birthdate BETWEEN '1965-01-01 00:00:00' AND '1980-12-31 23:59:59'
+WHERE e.birthdate
+    BETWEEN '1965-01-01 00:00:00'
+    AND '1980-12-31 23:59:59';
 ```
 
-#### 10.
+#### 10. Who are the employees hired since 2016?
 
 ```sql
--- Employees hired after 2016 till the current date             (Justin)
 SELECT *
 FROM employes e
-WHERE e.hiredate BETWEEN '2016-01-01 00:00:00' AND now()
+WHERE e.hiredate
+    BETWEEN '2016-01-01 00:00:00'
+    AND NOW();
 ```
 
 ### (e)
